@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="css/components.css">
     <link rel="stylesheet" href="css/tables.css">
     <link rel="shortcut icon" href="img/favicon.ico" type="image/x-icon">
-    <title>Suite Store</title>
+    <title>Categories</title>
 </head>
 <body>
     <header>
@@ -25,35 +25,25 @@
 
     <div class="container">
         <aside class="aside-1">
-            <div class="form-group">
-                <select id="prod" name="prod">
-                    <option value="" selected disabled>Select a Product</option>
-                </select>
-            </div>
-
             <div class="input-row">
-                <div class="form-group" style="flex: 1;">
-                    <input type="number" id="amount" name="amount" placeholder="Amount">
+                <div class="form-group" style="flex: 2;">
+                    <input type="text" id="category" name="category" placeholder="Category Name">
                 </div>
+
                 <div class="form-group" style="flex: 1;">
-                    <input type="number" id="tax" name="tax" placeholder="Tax">
-                </div>
-                <div class="form-group" style="flex: 1;">
-                    <input type="number" id="price" name="price" placeholder="Price">
+                    <input type="number" id="taxCategory" name="taxCategory" placeholder="Tax">
                 </div>
             </div>
-
-            <button class="addProduct">Add Product</button>
+            <button class="addCategory">Add Category</button>
         </aside>
 
         <aside class="aside-2">
-            <table class="tabelaProdutos">
+            <table class="table-categories">
                 <thead>
                     <tr>
-                        <th>Product</th>
-                        <th>Price</th>
-                        <th>Amount</th>
-                        <th>Tax</th> <th>Total</th>
+                        <th>Code</th>
+                        <th>Category</th>
+                        <th>Tax</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
@@ -63,29 +53,11 @@
                         <td></td>
                         <td></td>
                         <td></td>
-                        <td></td>
-                        <td></td>
                     </tr>
                 </tbody>
             </table>
-
-            <div class="totals-section">
-                <div class="total-row">
-                    <label>Tax:</label>
-                    <span>$0.00</span>
-                </div>
-                <div class="total-row">
-                    <label>Total:</label>
-                    <span>$0.00</span>
-                </div>
-            </div>
-
-            <div class="action-buttons">
-                <button class="btn-cancel">Cancel</button>
-                <button class="btn-finish">Finish</button>
-            </div>
         </aside>
     </div>
-    <script src="js/home.js"></script>
+    <script src="js/categories.js"></script>
 </body>
 </html>
