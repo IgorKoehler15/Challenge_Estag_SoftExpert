@@ -1,70 +1,56 @@
-# Getting Started with Create React App
+# 📦 Sistema de Gestão de Produtos e Pedidos 
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## 📖 Sobre o Projeto
+Este projeto foi desenvolvido como parte do programa de estágio e estudos da **SoftExpert**. O objetivo principal é construir uma aplicação Full-Stack robusta para o gerenciamento de categorias, produtos e histórico de pedidos, com foco em integridade de dados e boas práticas de regras de negócio.
 
-## Available Scripts
+## ✨ Funcionalidades Principais
+* **Gestão de Categorias:** Criação, listagem e exclusão (com validação de segurança caso existam produtos vinculados).
+* **Gestão de Produtos:** Controle de catálogo com nome, preço, quantidade e vínculo de categorias.
+* **Lógica Inteligente de Exclusão (Soft vs. Hard Delete):**
+  * **Hard Delete:** Se um produto nunca foi vendido, ele é apagado permanentemente do banco, otimizando o uso de IDs e limpeza da tabela.
+  * **Soft Delete:** Se um produto possui histórico em pedidos anteriores, ele é apenas inativado (`is_active = false`), protegendo a integridade financeira e o histórico das vendas.
+* **Reativação de Itens:** Prevenção de duplicação de cadastros, reativando itens previamente excluídos e atualizando seus dados sem quebrar a sequência do banco de dados.
 
-In the project directory, you can run:
+## 🛠️ Tecnologias Utilizadas
 
-### `npm start`
+### Backend
+* **PHP:** Construção da API REST.
+* **PDO:** Comunicação segura com o banco de dados.
+* **Banco de Dados:** PostgreSQL / MySQL (com chaves estrangeiras e relacionamentos).
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+### Frontend
+* **React.js:** Construção da interface de usuário (SPA).
+* **Integração:** Consumo da API via requisições HTTP (Fetch/Axios).
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+## 🚀 Como Executar o Projeto
 
-### `npm test`
+### 1. Configuração do Banco de Dados
+1. Execute o script SQL localizado na pasta `/database` para criar as tabelas (`categories`, `products`, `orders`, `order_item`).
+2. Ajuste as credenciais de conexão no arquivo `connection.php`.
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+### 2. Backend (API PHP)
+1. Coloque os arquivos PHP na pasta do seu servidor web (XAMPP, WAMP, etc.) ou inicie o servidor embutido do PHP na pasta do backend:
 
-### `npm run build`
+   ```bash
+   php -S localhost:8000
+### 3. Frontend (React)
+1. Navegue até a pasta do projeto React:
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+    ```bash
+    cd frontend
+2. Caso ainda não tenha criado o projeto, você pode iniciá-lo com:
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+    ```bash
+    npx create-react-app .
+3. Instale as dependências (caso tenha apenas clonado o repositório):
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+    ```bash
+    npm install
+4. Inicie o servidor de desenvolvimento:
 
-### `npm run eject`
+    ```bash
+    npm start
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+## 👨‍💻Autor
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+Desenvolvido durante o programa de estágio da SoftExpert.
