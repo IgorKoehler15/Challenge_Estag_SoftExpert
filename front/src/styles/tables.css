@@ -1,0 +1,86 @@
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 2rem;
+}
+
+table th, table td {
+    padding: 12px 8px; 
+    border-bottom: 1px solid #ddd;
+    text-align: left;
+    font-size: 0.95rem;
+    white-space: nowrap; 
+    word-break: break-word;
+}
+
+table th {
+    font-weight: bold;
+    border-bottom: 2px solid #ddd;
+}
+
+/* AJUSTE DOS BOTÕES DENTRO DAS TABELAS */
+table td button {
+    width: 100%;
+    max-width: 80px;
+    padding: 6px 8px;
+    font-size: 0.85rem;
+    box-sizing: border-box;
+    margin: 0 auto;
+    display: block;
+    white-space: nowrap; 
+    cursor: pointer;
+}
+
+table td a {
+    text-decoration: none;
+}
+
+.filler-row {
+    height: 100%;
+}
+
+.filler-row td {
+    border-bottom: none;
+}
+
+table.tabelaProdutos th:nth-child(1), table.tabelaProdutos td:nth-child(1) { width: 40%; }
+table.tabelaProdutos th:nth-child(2), table.tabelaProdutos td:nth-child(2) { width: 12%; border-left: 1px solid #eee; text-align: right;}
+table.tabelaProdutos th:nth-child(3), table.tabelaProdutos td:nth-child(3) { width: 12%; border-left: 1px solid #eee; text-align: right; }
+table.tabelaProdutos th:nth-child(4), table.tabelaProdutos td:nth-child(4) { width: 12%; border-left: 1px solid #eee; text-align: right; }
+table.tabelaProdutos th:nth-child(5), table.tabelaProdutos td:nth-child(5) { width: 12%; border-left: 1px solid #eee; text-align: right; }
+table.tabelaProdutos th:nth-child(6), table.tabelaProdutos td:nth-child(6) { width: 12%; border-left: 1px solid #eee; text-align: center; }
+
+.table-products th:nth-child(1), .table-products td:nth-child(1) { width: 10%; }
+.table-products th:nth-child(2), .table-products td:nth-child(2) { width: 50%; border-left: 1px solid #eee; text-align: left;}
+.table-products th:nth-child(3), .table-products td:nth-child(3) { width: 15%; border-left: 1px solid #eee; text-align: right;}
+.table-products th:nth-child(4), .table-products td:nth-child(4) { width: 15%; border-left: 1px solid #eee; text-align: right;}
+.table-products th:nth-child(5), .table-products td:nth-child(5) { width: 15%; border-left: 1px solid #eee; text-align: right;}
+.table-products th:nth-child(6), .table-products td:nth-child(6) { width: 15%; border-left: 1px solid #eee; text-align: center; }
+
+.table-categories th:nth-child(1), .table-categories td:nth-child(1) { width: 15%; }
+.table-categories th:nth-child(2), .table-categories td:nth-child(2) { width: 55%; border-left: 1px solid #eee;}
+.table-categories th:nth-child(3), .table-categories td:nth-child(3) { width: 15%; border-left: 1px solid #eee; text-align: right;}
+.table-categories th:nth-child(4), .table-categories td:nth-child(4) { width: 15%; border-left: 1px solid #eee; text-align: center; }
+
+.table-history th:nth-child(1), .table-history td:nth-child(1) { width: 20%; }
+.table-history th:nth-child(2), .table-history td:nth-child(2) { width: 30%; border-left: 1px solid #eee; }
+.table-history th:nth-child(3), .table-history td:nth-child(3) { width: 30%; border-left: 1px solid #eee; }
+.table-history th:nth-child(4), .table-history td:nth-child(4) { width: 20%; border-left: 1px solid #eee; text-align: center; }
+
+table.table-purchase th:nth-child(1), table.table-purchase td:nth-child(1) { width: 55%; } 
+table.table-purchase th:nth-child(2), table.table-purchase td:nth-child(2),
+table.table-purchase th:nth-child(3), table.table-purchase td:nth-child(3) { width: 15%; border-left: 1px solid #eee; text-align: right;}
+table.table-purchase th:nth-child(4), table.table-purchase td:nth-child(4) { width: 15%; border-left: 1px solid #eee; text-align: center;}
+
+/* RESPONSIVIDADE */
+@media (max-width: 600px) {
+    table th, table td {
+        padding: 8px 4px; 
+        font-size: 0.85rem; 
+    }
+    
+    table button {
+        padding: 5px 8px;
+        font-size: 0.75rem;
+    }
+}

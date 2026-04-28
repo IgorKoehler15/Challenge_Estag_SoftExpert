@@ -20,6 +20,7 @@ services:
     volumes:
       - ./back/src:/var/www/html
       - ./back/logs:/var/log/apache2
+      - ./front:/var/www/html/front
     links:
       - db
   pgadmin:
