@@ -1,56 +1,81 @@
-# 📦 Sistema de Gestão de Produtos e Pedidos 
+# 📦 Sistema de Gestão de Produtos e Pedidos
 
 ## 📖 Sobre o Projeto
 Este projeto foi desenvolvido como parte do programa de estágio e estudos da **SoftExpert**. O objetivo principal é construir uma aplicação Full-Stack robusta para o gerenciamento de categorias, produtos e histórico de pedidos, com foco em integridade de dados e boas práticas de regras de negócio.
 
+O frontend possui **duas versões**:
+- **Versão Original (Vanilla JS):** HTML, CSS e JavaScript puro — os arquivos estão na raiz da pasta `front/` (`index.html`, `categories.html`, etc.) junto com as pastas `js/` e `css/`.
+- **Versão React:** Refatoração completa para React 18 utilizando **Atomic Design**, localizada em `front/src/`. A aparência e o comportamento são idênticos à versão original.
+
 ## ✨ Funcionalidades Principais
 * **Gestão de Categorias:** Criação, listagem e exclusão (com validação de segurança caso existam produtos vinculados).
 * **Gestão de Produtos:** Controle de catálogo com nome, preço, quantidade e vínculo de categorias.
+* **Carrinho de Compras:** Adição de produtos ao carrinho com controle de estoque, cálculo de impostos e finalização de pedido.
+* **Histórico de Pedidos:** Listagem de pedidos finalizados com visualização detalhada de cada compra.
 * **Lógica Inteligente de Exclusão (Soft vs. Hard Delete):**
-  * **Hard Delete:** Se um produto nunca foi vendido, ele é apagado permanentemente do banco, otimizando o uso de IDs e limpeza da tabela.
+  * **Hard Delete:** Se um produto nunca foi vendido, ele é apagado permanentemente do banco.
   * **Soft Delete:** Se um produto possui histórico em pedidos anteriores, ele é apenas inativado (`is_active = false`), protegendo a integridade financeira e o histórico das vendas.
-* **Reativação de Itens:** Prevenção de duplicação de cadastros, reativando itens previamente excluídos e atualizando seus dados sem quebrar a sequência do banco de dados.
+* **Reativação de Itens:** Prevenção de duplicação de cadastros, reativando itens previamente excluídos e atualizando seus dados.
 
 ## 🛠️ Tecnologias Utilizadas
 
 ### Backend
-* **PHP:** Construção da API REST.
-* **PDO:** Comunicação segura com o banco de dados.
-* **Banco de Dados:** PostgreSQL / MySQL (com chaves estrangeiras e relacionamentos).
+* **PHP** — API REST
+* **PDO** — Comunicação segura com o banco de dados
+* **PostgreSQL / MySQL** — Banco de dados relacional
 
-### Frontend
-* **React.js:** Construção da interface de usuário (SPA).
-* **Integração:** Consumo da API via requisições HTTP (Fetch/Axios).
+### Frontend (Vanilla JS)
+* **HTML5, CSS3, JavaScript** — Páginas estáticas com manipulação direta do DOM
+
+### Frontend (React)
+* **React 18** — SPA com hooks (`useState`, `useEffect`, `useCallback`)
+* **React Router DOM** — Navegação client-side
+* **Atomic Design** — Arquitetura de componentes organizada em Atoms, Molecules, Organisms, Templates e Pages
+
+## 🏗️ Estrutura do Frontend React (Atomic Design)
+
+```
+front/src/
+├── components/
+│   ├── atoms/          # Button, Input, Select, Label
+│   ├── molecules/      # FormGroup, InputRow, TotalRow, SummaryItem
+│   ├── organisms/      # Header, DataTable, TotalsSection, SummaryCard, HomeForm, CategoryForm, ProductForm
+│   ├── templates/      # SidebarLayout, FullWidthLayout
+│   └── pages/          # HomePage, ProductsPage, CategoriesPage, HistoryPage, PurchasePage
+├── services/
+│   └── api.js          # Funções centralizadas de comunicação com o backend
+├── styles/             # CSS original (global, components, tables) sem alterações
+├── App.js              # Rotas da aplicação
+└── index.js            # Ponto de entrada
+```
 
 ## 🚀 Como Executar o Projeto
 
-### 1. Configuração do Banco de Dados
-1. Execute o script SQL localizado na pasta `/database` para criar as tabelas (`categories`, `products`, `orders`, `order_item`).
-2. Ajuste as credenciais de conexão no arquivo `connection.php`.
+### 1. Banco de Dados
+1. Execute o script SQL em `/database/init.sql` para criar as tabelas.
+2. Ajuste as credenciais de conexão em `back/src/connection.php`.
 
-### 2. Backend (API PHP)
-1. Coloque os arquivos PHP na pasta do seu servidor web (XAMPP, WAMP, etc.) ou inicie o servidor embutido do PHP na pasta do backend:
+### 2. Com Docker (recomendado)
+```bash
+docker-compose up -d
+```
 
-   ```bash
-   php -S localhost:8000
-### 3. Frontend (React)
-1. Navegue até a pasta do projeto React:
+### 3. Sem Docker
 
-    ```bash
-    cd frontend
-2. Caso ainda não tenha criado o projeto, você pode iniciá-lo com:
+#### Backend (API PHP)
+Coloque os arquivos de `back/src/` no seu servidor web (XAMPP, WAMP, etc.) apontando para `localhost` na porta 80.
 
-    ```bash
-    npx create-react-app .
-3. Instale as dependências (caso tenha apenas clonado o repositório):
+#### Frontend — Versão Vanilla JS
+Abra diretamente os arquivos HTML da pasta `front/` no navegador (ex: `front/index.html`).
 
-    ```bash
-    npm install
-4. Inicie o servidor de desenvolvimento:
+#### Frontend — Versão React
+```bash
+cd front
+npm install
+npm start
+```
+O servidor de desenvolvimento roda na porta 3000 e utiliza o proxy configurado no `package.json` para encaminhar as requisições da API para `http://localhost` (porta 80), evitando problemas de CORS.
 
-    ```bash
-    npm start
+## 👨‍💻 Autor
 
-## 👨‍💻Autor
-
-Desenvolvido durante o programa de estágio da SoftExpert.
+Desenvolvido por Igor Henrique Koehler durante o programa de estágio da SoftExpert (2026).
