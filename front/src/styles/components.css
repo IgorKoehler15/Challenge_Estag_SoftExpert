@@ -1,0 +1,191 @@
+/*FORMULÁRIOS E INPUTS*/
+.aside-1 input, 
+.aside-1 select {
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background-color: #f8f8f8;
+    font-size: 0.9rem;
+    width: 100%; /* Garante que preencham todo o espaço do container */
+    box-sizing: border-box; /* Impede que o padding quebre a largura do elemento */
+}
+
+/* O bloco isolado de #category foi removido, pois a regra acima já aplica o estilo para todos os selects! */
+
+.input-row {
+    display: flex;
+    gap: 10px;
+    flex-wrap: nowrap;
+}
+
+.input-row .form-group {
+    flex: 1 1 150px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    margin-bottom: 10px;
+    font-weight: bold;
+    font-size: 0.9rem;
+}
+
+/*BOTÕES*/
+button {
+    padding: 8px 30px;
+    border: none;
+    border-radius: 4px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.5s;
+}
+
+button:hover {
+    background-color: #5550cc;
+    color: white;
+}
+
+button.addProduct, button.addCategory {
+    background-color: #6A65FF;
+    color: white;
+    font-weight: bold;
+    border: none;
+    padding: 10px;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: 0.3s;
+}
+
+button.addProduct:hover, button.addCategory:hover {
+    background-color: #5550cc;
+}
+
+.action-buttons {
+    display: flex;
+    justify-content: flex-end; 
+    gap: 15px;
+}
+
+.action-buttons button {
+    padding: 8px 30px;
+    border: none;
+    border-radius: 4px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.btn-cancel {
+    background-color: #C5C5C5;
+    color: #333;
+}
+
+.btn-view {
+    background-color: #6A65FF;
+    color: white;
+}
+
+.btn-finish {
+    background-color: #6A65FF;
+    color: white;
+}
+
+/*SEÇÃO DE TOTAIS*/
+.totals-section {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    margin-bottom: 1.5rem;
+    margin-top: auto;
+    gap: 5px;
+}
+
+.total-row {
+    display: flex;
+    width: 150px;
+    justify-content: space-between;
+    font-size: 0.9rem;
+}
+
+.total-row label{
+    font-weight: bold;
+}
+
+/*CARDS E DETALHES EXIBIDOS NA PÁGINA PURCHASE*/
+.summary-card {
+    display: flex;
+    gap: 3rem;
+    background-color: #f8f8f8;
+    padding: 1.5rem 2rem;
+    border-radius: 8px;
+    border: 1px solid #eee;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+    white-space: nowrap;
+}
+
+.summary-item {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    font-size: 0.95rem;
+}
+
+.summary-item label {
+    font-weight: bold;
+    color: #666;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+}
+
+.status-finished {
+    color: #27ae60;
+    font-weight: bold;
+}
+
+.details-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-top: auto;
+    padding-top: 1.5rem;
+    flex-wrap: wrap;
+}
+
+.details-footer a {
+    text-decoration: none;
+}
+
+/* --- AJUSTES RESPONSIVOS --- */
+@media (max-width: 600px) {
+    .details-footer {
+        flex-direction: column; 
+        align-items: flex-start !important; 
+        gap: 15px;              
+        margin-top: 1.5rem;     
+    }
+
+    .totals-section {
+        order: 1; 
+        align-self: flex-end !important; 
+        margin-bottom: 5px;
+        margin-top: 0;
+    }
+
+    .details-footer a,
+    .details-footer > button {
+        order: 2; 
+        align-self: flex-start !important; 
+    }
+
+    .total-row {
+        justify-content: space-between; 
+        width: 150px;             
+    }
+    
+    .action-buttons {
+        order: 2; 
+        align-self: flex-end !important; 
+        justify-content: flex-end;
+    }
+}
