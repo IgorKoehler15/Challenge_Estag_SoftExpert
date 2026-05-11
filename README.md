@@ -1,81 +1,170 @@
-# 📦 Sistema de Gestão de Produtos e Pedidos
+# 📦 Suite Store — Sistema de Gestão de Produtos e Pedidos
 
 ## 📖 Sobre o Projeto
-Este projeto foi desenvolvido como parte do programa de estágio e estudos da **SoftExpert**. O objetivo principal é construir uma aplicação Full-Stack robusta para o gerenciamento de categorias, produtos e histórico de pedidos, com foco em integridade de dados e boas práticas de regras de negócio.
 
-O frontend possui **duas versões**:
-- **Versão Original (Vanilla JS):** HTML, CSS e JavaScript puro — os arquivos estão na raiz da pasta `front/` (`index.html`, `categories.html`, etc.) junto com as pastas `js/` e `css/`.
-- **Versão React:** Refatoração completa para React 18 utilizando **Atomic Design**, localizada em `front/src/`. A aparência e o comportamento são idênticos à versão original.
+Aplicação Full-Stack desenvolvida durante o programa de estágio da **SoftExpert**, com o objetivo de gerenciar categorias, produtos e pedidos de compra. O sistema implementa regras de negócio para integridade de dados, controle de estoque e preservação de histórico financeiro.
 
-## ✨ Funcionalidades Principais
-* **Gestão de Categorias:** Criação, listagem e exclusão (com validação de segurança caso existam produtos vinculados).
-* **Gestão de Produtos:** Controle de catálogo com nome, preço, quantidade e vínculo de categorias.
-* **Carrinho de Compras:** Adição de produtos ao carrinho com controle de estoque, cálculo de impostos e finalização de pedido.
-* **Histórico de Pedidos:** Listagem de pedidos finalizados com visualização detalhada de cada compra.
-* **Lógica Inteligente de Exclusão (Soft vs. Hard Delete):**
-  * **Hard Delete:** Se um produto nunca foi vendido, ele é apagado permanentemente do banco.
-  * **Soft Delete:** Se um produto possui histórico em pedidos anteriores, ele é apenas inativado (`is_active = false`), protegendo a integridade financeira e o histórico das vendas.
-* **Reativação de Itens:** Prevenção de duplicação de cadastros, reativando itens previamente excluídos e atualizando seus dados.
+O frontend possui **duas versões** com aparência e comportamento idênticos:
+- **Vanilla JS** — HTML, CSS e JavaScript puro (pasta `front/`, arquivos `.html` + `js/` + `css/`)
+- **React 18** — Refatoração com Atomic Design (pasta `front/src/`)
 
-## 🛠️ Tecnologias Utilizadas
+---
 
-### Backend
-* **PHP** — API REST
-* **PDO** — Comunicação segura com o banco de dados
-* **PostgreSQL / MySQL** — Banco de dados relacional
+## 🛠️ Linguagens e Tecnologias
 
-### Frontend (Vanilla JS)
-* **HTML5, CSS3, JavaScript** — Páginas estáticas com manipulação direta do DOM
+| Camada | Linguagem / Tecnologia | Uso |
+|--------|----------------------|-----|
+| **Backend** | PHP 8.1 | API REST |
+| **Backend** | SQL (PostgreSQL 14) | Banco de dados relacional |
+| **Frontend** | JavaScript (ES6+) | Lógica da aplicação |
+| **Frontend** | HTML5 | Estrutura das páginas |
+| **Frontend** | CSS3 | Estilização |
+| **Frontend** | React 18 | SPA com componentes |
 
-### Frontend (React)
-* **React 18** — SPA com hooks (`useState`, `useEffect`, `useCallback`)
-* **React Router DOM** — Navegação client-side
-* **Atomic Design** — Arquitetura de componentes organizada em Atoms, Molecules, Organisms, Templates e Pages
+---
 
-## 🏗️ Estrutura do Frontend React (Atomic Design)
+## ✨ Funcionalidades
+
+### Gestão de Categorias
+- Criação, listagem e exclusão de categorias
+- Validação de segurança: impede exclusão se houver produtos ativos vinculados
+
+### Gestão de Produtos
+- Cadastro com nome, preço, quantidade e categoria
+- Controle de estoque automático (decrementado a cada compra)
+- Validação de nome duplicado entre produtos visíveis
+
+### Carrinho de Compras
+- Adição de produtos com controle de estoque disponível
+- Cálculo automático de impostos por categoria
+- Persistência no `localStorage` (sobrevive a refresh)
+- Finalização de pedido com atualização de estoque
+
+### Histórico de Pedidos
+- Listagem de todos os pedidos finalizados
+- Visualização detalhada de cada compra (produtos, quantidades, impostos)
+
+### Regras de Negócio de Exclusão
+| Situação | Comportamento |
+|----------|--------------|
+| Produto/categoria **nunca usado** em pedidos | **Hard Delete** — removido permanentemente do banco |
+| Produto/categoria **com histórico** de pedidos | **Soft Delete** — inativado (`is_active = false`), preservando a integridade do histórico |
+
+### Código de Exibição (`display_code`)
+- Cada item possui um `code` interno (PK, nunca reutilizado) e um `display_code` (exibido na tela)
+- O `display_code` é sequencial baseado nos itens ativos visíveis
+- Ao excluir um item do meio, os demais mantêm seus códigos (sem reindexação)
+- O próximo cadastrado recebe `MAX(display_code dos visíveis) + 1`
+
+---
+
+## 🏗️ Arquitetura do Frontend React (Atomic Design)
 
 ```
 front/src/
 ├── components/
-│   ├── atoms/          # Button, Input, Select, Label
-│   ├── molecules/      # FormGroup, InputRow, TotalRow, SummaryItem
-│   ├── organisms/      # Header, DataTable, TotalsSection, SummaryCard, HomeForm, CategoryForm, ProductForm
-│   ├── templates/      # SidebarLayout, FullWidthLayout
-│   └── pages/          # HomePage, ProductsPage, CategoriesPage, HistoryPage, PurchasePage
+│   ├── atoms/          → Button, Input, Select, Label
+│   ├── molecules/      → FormGroup, InputRow, TotalRow, SummaryItem
+│   ├── organisms/      → Header, DataTable, TotalsSection, SummaryCard, HomeForm, CategoryForm, ProductForm
+│   ├── templates/      → SidebarLayout, FullWidthLayout
+│   └── pages/          → HomePage, ProductsPage, CategoriesPage, HistoryPage, PurchasePage
+├── hooks/
+│   └── useDomProtection.js
 ├── services/
-│   └── api.js          # Funções centralizadas de comunicação com o backend
-├── styles/             # CSS original (global, components, tables) sem alterações
-├── App.js              # Rotas da aplicação
-└── index.js            # Ponto de entrada
+│   └── api.js          → Comunicação centralizada com o backend
+├── styles/             → CSS (global, components, tables)
+├── App.js              → Rotas da aplicação
+└── index.js            → Ponto de entrada
 ```
 
-## 🚀 Como Executar o Projeto
+---
 
-### 1. Banco de Dados
-1. Execute o script SQL em `/database/init.sql` para criar as tabelas.
-2. Ajuste as credenciais de conexão em `back/src/connection.php`.
+## 🛠️ Infraestrutura (Docker)
 
-### 2. Com Docker (recomendado)
+O projeto roda com 4 containers via Docker Compose:
+
+| Serviço | Container | Porta | Descrição |
+|---------|-----------|-------|-----------|
+| **PostgreSQL 14** | `pgsql_desafio` | `5433` | Banco de dados |
+| **PHP 8.1 + Apache** | `php_desafio` | `80` | API REST (backend) |
+| **Node.js** | `node_desafio` | `3000` | Frontend React (dev server) |
+| **pgAdmin 4** | `pgadmin_desafio` | `8080` | Interface de administração do banco |
+
+### Credenciais padrão
+
+| Serviço | Usuário | Senha |
+|---------|---------|-------|
+| PostgreSQL | `root` | `root` |
+| pgAdmin | `root@root.com` | `root` |
+
+---
+
+## 🚀 Como Executar
+
+### Com Docker (recomendado)
+
 ```bash
+# Subir todos os containers
 docker-compose up -d
+
+# Ou usar o script auxiliar
+./scripts/start.sh
 ```
 
-### 3. Sem Docker
+Após subir, acesse:
+- **Frontend React:** http://localhost:3000
+- **API (Backend):** http://localhost
+- **pgAdmin:** http://localhost:8080
 
-#### Backend (API PHP)
-Coloque os arquivos de `back/src/` no seu servidor web (XAMPP, WAMP, etc.) apontando para `localhost` na porta 80.
+### Scripts auxiliares
 
-#### Frontend — Versão Vanilla JS
-Abra diretamente os arquivos HTML da pasta `front/` no navegador (ex: `front/index.html`).
+| Script | Descrição |
+|--------|-----------|
+| `scripts/start.sh` | Derruba e recria todos os containers |
+| `scripts/stop.sh` | Para todos os containers |
+| `scripts/install.sh` | Instala dependências npm dentro do container Node |
 
-#### Frontend — Versão React
+### Sem Docker
+
+#### Backend
+Coloque os arquivos de `back/src/` em um servidor Apache com PHP 8.1+ e a extensão `pdo_pgsql` habilitada. Ajuste as credenciais em `back/src/connection.php`.
+
+#### Frontend React
 ```bash
 cd front
 npm install
 npm start
 ```
-O servidor de desenvolvimento roda na porta 3000 e utiliza o proxy configurado no `package.json` para encaminhar as requisições da API para `http://localhost` (porta 80), evitando problemas de CORS.
+
+#### Banco de Dados
+Execute o script `database/init.sql` em uma instância PostgreSQL.
+
+---
+
+## 📁 Estrutura do Projeto
+
+```
+├── back/
+│   ├── src/              → Arquivos PHP da API (categories, products, checkout, history)
+│   ├── logs/             → Logs do Apache
+│   ├── Dockerfile        → Imagem PHP 8.1 + Apache
+│   └── virtualhost.conf  → Configuração do Apache
+├── front/
+│   ├── src/              → Código React (Atomic Design)
+│   ├── js/               → Versão Vanilla JS
+│   ├── css/              → Estilos da versão Vanilla
+│   ├── *.html            → Páginas da versão Vanilla
+│   ├── Dockerfile        → Imagem Node.js
+│   └── package.json      → Dependências React
+├── database/
+│   ├── init.sql          → Script de criação das tabelas
+│   └── server.json       → Configuração do pgAdmin
+├── scripts/              → Scripts auxiliares (start, stop, install)
+└── docker-compose.yml    → Orquestração dos containers
+```
+
+---
 
 ## 👨‍💻 Autor
 
-Desenvolvido por Igor Henrique Koehler durante o programa de estágio da SoftExpert (2026).
+Desenvolvido por **Igor Henrique Koehler** durante o programa de estágio da SoftExpert (2026).
