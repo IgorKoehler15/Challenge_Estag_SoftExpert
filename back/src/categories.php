@@ -41,11 +41,9 @@ elseif ($method === 'POST') {
             exit();
         }
 
-        // Generate display_code: MAX of active display_codes + 1
         $stmt_display = $pdo->query("SELECT COALESCE(MAX(display_code), 0) + 1 AS next_display FROM categories WHERE is_active = true");
         $next_display = $stmt_display->fetch()['next_display'];
 
-        // Generate internal code: MAX of ALL codes + 1 (never reused)
         $stmt_id = $pdo->query("SELECT COALESCE(MAX(code), 0) + 1 AS next_code FROM categories");
         $next_code = $stmt_id->fetch()['next_code'];
 
@@ -77,8 +75,7 @@ elseif ($method === 'DELETE') {
             exit();
         }
 
-        // Check if there are active products linked to this category
-        $stmtCheckActive = $pdo->prepare("SELECT COUNT(*) FROM products WHERE category_code = :code AND is_active = true");
+        $stmtCheckActive = $pdo->prepare("SELECT COUNT(*) FROM products WHERE category_code = :code AND is_active = true AND amount > 0");
         $stmtCheckActive->execute([':code' => $code]);
         
         if ($stmtCheckActive->fetchColumn() > 0) {
@@ -87,7 +84,6 @@ elseif ($method === 'DELETE') {
             exit();
         }
 
-        // Check if the category has any link to orders (through products in order_item)
         $stmtCheckOrders = $pdo->prepare("
             SELECT COUNT(*) FROM order_item oi
             INNER JOIN products p ON p.code = oi.product_code
@@ -96,18 +92,15 @@ elseif ($method === 'DELETE') {
         $stmtCheckOrders->execute([':code' => $code]);
         $hasOrderLinks = $stmtCheckOrders->fetchColumn() > 0;
 
-        // Also check if there are inactive products still linked
         $stmtCheckInactive = $pdo->prepare("SELECT COUNT(*) FROM products WHERE category_code = :code AND is_active = false");
         $stmtCheckInactive->execute([':code' => $code]);
         $hasInactiveProducts = $stmtCheckInactive->fetchColumn() > 0;
 
         if ($hasOrderLinks || $hasInactiveProducts) {
-            // Soft delete — category has history
             $sql = "UPDATE categories SET is_active = false, updated_at = CURRENT_TIMESTAMP WHERE code = :code AND is_active = true";
             $stmt = $pdo->prepare($sql);
             $stmt->execute([':code' => $code]);
         } else {
-            // Hard delete — no links at all
             $sql = "DELETE FROM categories WHERE code = :code AND is_active = true";
             $stmt = $pdo->prepare($sql);
             $stmt->execute([':code' => $code]);
