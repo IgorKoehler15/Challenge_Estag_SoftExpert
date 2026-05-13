@@ -1,4 +1,50 @@
-/*FORMULÁRIOS E INPUTS*/
+/**
+ * ============================================================
+ * ARQUIVO: styles/components.css — ESTILOS DE COMPONENTES REUTILIZÁVEIS
+ * ============================================================
+ *
+ * Este arquivo define a aparência de componentes visuais que são
+ * usados em VÁRIAS páginas da aplicação: formulários, botões,
+ * seção de totais e cards de resumo.
+ *
+ * DIFERENÇA ENTRE global.css E components.css:
+ * - global.css: estrutura/layout geral (onde as coisas ficam)
+ * - components.css: aparência de elementos específicos (como eles parecem)
+ *
+ * CONCEITO: ESPECIFICIDADE CSS
+ * Quando dois seletores aplicam estilos ao mesmo elemento, o mais
+ * ESPECÍFICO vence. Ordem de especificidade (do menor ao maior):
+ * 1. Seletor de elemento: button { }
+ * 2. Seletor de classe: .btn-cancel { }
+ * 3. Seletor de ID: #meuBotao { }
+ * 4. Inline style: style="..."
+ *
+ * CONEXÃO COM OUTROS ARQUIVOS:
+ * - Importado em index.js (segundo CSS carregado, após global.css)
+ * - Classes usadas pelos componentes em:
+ *   atoms/ (Input, Select, Button, Label)
+ *   molecules/ (InputRow, FormGroup, TotalRow, SummaryItem)
+ *   organisms/ (CategoryForm, ProductForm, HomeForm, SummaryCard, TotalsSection)
+ */
+
+/* ═══════════════════════════════════════════════════════════════
+   FORMULÁRIOS E INPUTS
+   ═══════════════════════════════════════════════════════════════
+
+   Estiliza TODOS os inputs e selects dentro da coluna esquerda
+   (.aside-1), que é onde ficam os formulários de cadastro.
+
+   - padding: 10px → espaço interno para o texto não ficar colado na borda
+   - border: borda sutil cinza claro
+   - border-radius: 4px → cantos levemente arredondados
+   - background-color: #f8f8f8 → cinza muito claro (quase branco)
+   - font-size: 0.9rem → tamanho de fonte ligeiramente menor que o padrão
+   - width: 100% → ocupa toda a largura disponível do container pai
+   - box-sizing: border-box → padding NÃO aumenta a largura total
+     (sem isso, width: 100% + padding: 10px = mais de 100%!)
+
+   CONEXÃO: componentes Input.js e Select.js (atoms)
+*/
 .aside-1 input, 
 .aside-1 select {
     padding: 10px;
@@ -6,22 +52,44 @@
     border-radius: 4px;
     background-color: #f8f8f8;
     font-size: 0.9rem;
-    width: 100%; /* Garante que preencham todo o espaço do container */
-    box-sizing: border-box; /* Impede que o padding quebre a largura do elemento */
+    width: 100%;
+    box-sizing: border-box;
 }
 
-/* O bloco isolado de #category foi removido, pois a regra acima já aplica o estilo para todos os selects! */
+/* ─── LINHA DE INPUTS (lado a lado) ──────────────────────────
+   Quando queremos dois ou mais campos na MESMA linha
+   (ex: "Preço" e "Quantidade" lado a lado).
 
+   - display: flex → coloca os filhos em linha horizontal
+   - gap: 10px → espaçamento entre os campos
+   - flex-wrap: nowrap → NÃO quebra linha (ficam sempre lado a lado)
+
+   CONEXÃO: componente InputRow.js (molecule)
+*/
 .input-row {
     display: flex;
     gap: 10px;
     flex-wrap: nowrap;
 }
 
+/* Cada campo dentro da input-row cresce igualmente
+   - flex: 1 1 150px → cresce, encolhe, mínimo de 150px
+*/
 .input-row .form-group {
     flex: 1 1 150px;
 }
 
+/* ─── GRUPO DE FORMULÁRIO ────────────────────────────────────
+   Agrupa um LABEL + INPUT verticalmente.
+   Exemplo:  Nome do Produto
+             [________________]
+
+   - flex-direction: column → empilha label em cima do input
+   - gap: 5px → pequeno espaço entre label e input
+   - margin-bottom: 10px → espaço abaixo de cada grupo
+
+   CONEXÃO: componente FormGroup.js (molecule)
+*/
 .form-group {
     display: flex;
     flex-direction: column;
@@ -31,7 +99,20 @@
     font-size: 0.9rem;
 }
 
-/*BOTÕES*/
+/* ═══════════════════════════════════════════════════════════════
+   BOTÕES
+   ═══════════════════════════════════════════════════════════════
+
+   Estilos base para TODOS os botões da aplicação.
+
+   - border: none → remove a borda padrão do navegador
+   - cursor: pointer → muda o cursor para "mãozinha" ao passar por cima
+     (indica que é clicável)
+   - transition: 0.5s → animação suave de 0.5 segundos ao mudar estilos
+     (ex: mudança de cor no hover acontece gradualmente)
+
+   CONEXÃO: componente Button.js (atom)
+*/
 button {
     padding: 8px 30px;
     border: none;
@@ -41,11 +122,20 @@ button {
     transition: 0.5s;
 }
 
+/* :hover = pseudo-classe que aplica estilos quando o mouse está
+   SOBRE o elemento. Dá feedback visual ao usuário.
+*/
 button:hover {
     background-color: #5550cc;
     color: white;
 }
 
+/* ─── BOTÕES DE AÇÃO ESPECÍFICOS ─────────────────────────────
+   Botões "Adicionar Produto" e "Adicionar Categoria" nos formulários.
+   Têm a cor roxa da marca (#6A65FF) com texto branco.
+
+   CONEXÃO: usados em ProductForm.js e CategoryForm.js (organisms)
+*/
 button.addProduct, button.addCategory {
     background-color: #6A65FF;
     color: white;
@@ -61,6 +151,14 @@ button.addProduct:hover, button.addCategory:hover {
     background-color: #5550cc;
 }
 
+/* ─── GRUPO DE BOTÕES DE AÇÃO ────────────────────────────────
+   Container para botões que ficam lado a lado (ex: "Cancelar" + "Finalizar")
+
+   - justify-content: flex-end → alinha os botões à DIREITA
+   - gap: 15px → espaçamento entre os botões
+
+   CONEXÃO: usado na HomePage e PurchasePage (rodapé com ações)
+*/
 .action-buttons {
     display: flex;
     justify-content: flex-end; 
@@ -75,22 +173,42 @@ button.addProduct:hover, button.addCategory:hover {
     cursor: pointer;
 }
 
+/* Botão "Cancelar" — cinza neutro, indica ação secundária */
 .btn-cancel {
     background-color: #C5C5C5;
     color: #333;
 }
 
+/* Botão "Visualizar" — roxo, indica ação de navegação */
 .btn-view {
     background-color: #6A65FF;
     color: white;
 }
 
+/* Botão "Finalizar" — roxo, indica ação principal/primária */
 .btn-finish {
     background-color: #6A65FF;
     color: white;
 }
 
-/*SEÇÃO DE TOTAIS*/
+/* ═══════════════════════════════════════════════════════════════
+   SEÇÃO DE TOTAIS
+   ═══════════════════════════════════════════════════════════════
+
+   Exibe os valores totais da compra (subtotal, desconto, total).
+   Fica alinhada à direita, geralmente no rodapé da página.
+
+   - align-items: flex-end → alinha o conteúdo à direita
+   - margin-top: auto → "empurra" a seção para baixo (ocupa espaço
+     restante acima), fazendo ela ficar no final do container flex
+
+   CONCEITO: margin-top: auto em flexbox
+   Quando um item flex tem margin-top: auto, ele "absorve" todo o
+   espaço vertical disponível acima dele, efetivamente se posicionando
+   no final do container. É um truque muito útil para footers!
+
+   CONEXÃO: componente TotalsSection.js (organism)
+*/
 .totals-section {
     display: flex;
     flex-direction: column;
@@ -100,6 +218,12 @@ button.addProduct:hover, button.addCategory:hover {
     gap: 5px;
 }
 
+/* Cada linha de total (ex: "Qtd: 5" ou "Total: R$ 50,00")
+   - width: 150px → largura fixa para alinhar os valores
+   - justify-content: space-between → label à esquerda, valor à direita
+
+   CONEXÃO: componente TotalRow.js (molecule)
+*/
 .total-row {
     display: flex;
     width: 150px;
@@ -111,7 +235,21 @@ button.addProduct:hover, button.addCategory:hover {
     font-weight: bold;
 }
 
-/*CARDS E DETALHES EXIBIDOS NA PÁGINA PURCHASE*/
+/* ═══════════════════════════════════════════════════════════════
+   CARDS DE RESUMO (Página de Detalhes da Compra)
+   ═══════════════════════════════════════════════════════════════
+
+   Card que mostra informações resumidas de uma compra:
+   código, data, status, valor total.
+
+   - display: flex + gap: 3rem → itens lado a lado com espaçamento
+   - background-color: #f8f8f8 → fundo cinza claro (destaque sutil)
+   - border-radius: 8px → cantos mais arredondados (visual de "card")
+   - flex-wrap: wrap → se não couber, quebra para próxima linha
+   - white-space: nowrap → textos individuais não quebram no meio
+
+   CONEXÃO: componente SummaryCard.js (organism)
+*/
 .summary-card {
     display: flex;
     gap: 3rem;
@@ -124,6 +262,12 @@ button.addProduct:hover, button.addCategory:hover {
     white-space: nowrap;
 }
 
+/* Cada item dentro do card (ex: "CÓDIGO: 12")
+   - flex-direction: column → label em cima, valor embaixo
+   - text-transform: uppercase → label em MAIÚSCULAS (visual de rótulo)
+
+   CONEXÃO: componente SummaryItem.js (molecule)
+*/
 .summary-item {
     display: flex;
     flex-direction: column;
@@ -138,11 +282,21 @@ button.addProduct:hover, button.addCategory:hover {
     text-transform: uppercase;
 }
 
+/* Status "Finalizado" em verde — feedback visual positivo */
 .status-finished {
     color: #27ae60;
     font-weight: bold;
 }
 
+/* ─── RODAPÉ DA PÁGINA DE DETALHES ───────────────────────────
+   Área inferior da PurchasePage com totais + botão "Voltar".
+
+   - justify-content: space-between → um item à esquerda, outro à direita
+   - align-items: flex-end → alinha na parte inferior
+   - margin-top: auto → empurra para o final da página (mesmo truque!)
+
+   CONEXÃO: PurchasePage.js
+*/
 .details-footer {
     display: flex;
     justify-content: space-between;
@@ -156,7 +310,24 @@ button.addProduct:hover, button.addCategory:hover {
     text-decoration: none;
 }
 
-/* --- AJUSTES RESPONSIVOS --- */
+/* ═══════════════════════════════════════════════════════════════
+   RESPONSIVIDADE — Telas pequenas (max 600px = celulares)
+   ═══════════════════════════════════════════════════════════════
+
+   Em telas muito pequenas, reorganizamos o rodapé de detalhes:
+   - Muda de horizontal para vertical (column)
+   - Reordena os elementos com "order" (totais primeiro, botão depois)
+
+   CONCEITO: ORDER em Flexbox
+   A propriedade "order" permite mudar a ORDEM VISUAL dos elementos
+   sem alterar o HTML. Itens com order menor aparecem primeiro.
+   Padrão é 0, então order: 1 coloca o item depois dos demais.
+
+   CONCEITO: !important
+   Força um estilo a ter prioridade máxima, ignorando especificidade.
+   Use com moderação! Aqui é necessário porque estamos sobrescrevendo
+   estilos que podem ter especificidade maior em outros contextos.
+*/
 @media (max-width: 600px) {
     .details-footer {
         flex-direction: column; 

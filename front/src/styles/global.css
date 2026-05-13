@@ -1,10 +1,66 @@
-/*RESET E ESTILOS GERAIS*/
+/**
+ * ============================================================
+ * ARQUIVO: styles/global.css — ESTILOS GLOBAIS DA APLICAÇÃO
+ * ============================================================
+ *
+ * Este arquivo define a BASE VISUAL de toda a aplicação.
+ * Ele é importado no index.js e afeta TODOS os elementos da página.
+ *
+ * O QUE CONTÉM:
+ * 1. Reset CSS (remove estilos padrão dos navegadores)
+ * 2. Estilos do body (fonte, cor, layout geral)
+ * 3. Menu de navegação (nav)
+ * 4. Estrutura principal do layout (container, aside, content)
+ * 5. Responsividade (adaptação para telas menores)
+ *
+ * CONCEITO: CASCATA DO CSS
+ * CSS significa "Cascading Style Sheets" (Folhas de Estilo em Cascata).
+ * Estilos definidos aqui são a "base" e podem ser sobrescritos por
+ * estilos mais específicos em components.css ou tables.css.
+ *
+ * CONEXÃO COM OUTROS ARQUIVOS:
+ * - Importado em index.js (primeiro CSS carregado)
+ * - Define a estrutura que os componentes React usam
+ *   (ex: .container, .aside-1, .aside-2 são usados nos templates
+ *   SidebarLayout.js e FullWidthLayout.js)
+ */
+
+/* ═══════════════════════════════════════════════════════════════
+   RESET CSS — Removendo estilos padrão dos navegadores
+   ═══════════════════════════════════════════════════════════════
+
+   POR QUE FAZER RESET?
+   Cada navegador (Chrome, Firefox, Safari) aplica estilos padrão
+   diferentes aos elementos HTML. Por exemplo, o <body> tem margem
+   de 8px no Chrome. O reset garante que TODOS os navegadores
+   comecem do zero, evitando diferenças visuais inesperadas.
+
+   * (asterisco) = seletor universal, seleciona TODOS os elementos.
+
+   - margin: 0 → remove espaçamento externo
+   - padding: 0 → remove espaçamento interno
+   - box-sizing: border-box → faz com que padding e border sejam
+     incluídos no tamanho total do elemento (muito importante!)
+     Sem isso, um elemento com width: 100px + padding: 10px
+     teria 120px de largura total. Com border-box, mantém 100px.
+*/
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
 
+/* ─── ESTILOS DO BODY ────────────────────────────────────────
+   O <body> é o container de toda a página visível.
+
+   - font-family: define a fonte padrão (Arial, ou sans-serif como fallback)
+   - background: cor de fundo da página
+   - color: cor padrão do texto (#333 = cinza escuro, mais suave que preto)
+   - display: flex + flex-direction: column → organiza os filhos em coluna
+   - min-height: 100vh → garante que o body ocupe no MÍNIMO a tela inteira
+     (vh = viewport height, 100vh = 100% da altura da janela)
+     Isso evita que o footer "flutue" no meio da tela quando há pouco conteúdo.
+*/
 body {
     font-family: Arial, sans-serif;
     background: white;
@@ -14,13 +70,36 @@ body {
     min-height: 100vh;
 }
 
+/* ─── CONTAINER DO REACT (#root) ─────────────────────────────
+   Esta é a <div id="root"> do public/index.html onde o React
+   monta toda a aplicação. Aplicamos o mesmo layout flex-column
+   para que a estrutura interna também ocupe toda a altura.
+
+   CONEXÃO: index.js → ReactDOM.createRoot(document.getElementById('root'))
+*/
 #root {
     display: flex;
     flex-direction: column;
     min-height: 100vh;
 }
 
-/*MENU DE NAVEGAÇÃO*/
+/* ═══════════════════════════════════════════════════════════════
+   MENU DE NAVEGAÇÃO (nav)
+   ═══════════════════════════════════════════════════════════════
+
+   O <nav> é o menu superior que aparece em TODAS as páginas.
+   Ele contém o logo e os links de navegação.
+
+   - width: 100% → ocupa toda a largura da tela
+   - padding: espaçamento interno (0.8rem vertical, 2rem horizontal)
+     rem = unidade relativa ao tamanho da fonte raiz (geralmente 16px)
+     Então 2rem = 32px. Usar rem é melhor para acessibilidade.
+   - background-color: #6A65FF → roxo/lilás (cor principal da marca)
+   - margin-bottom: 2rem → espaço abaixo do nav antes do conteúdo
+   - display: flex + align-items: center → alinha itens verticalmente
+
+   CONEXÃO: componente Header.js renderiza o <nav>
+*/
 nav {
     width: 100%;
     padding: 0.8rem 2rem;
@@ -30,6 +109,11 @@ nav {
     align-items: center;
 }
 
+/* Grupo de navegação: agrupa logo + links lado a lado
+   - gap: 2rem → espaçamento entre logo e links
+   - flex-wrap: wrap → se não couber na linha, quebra para baixo
+     (importante para telas pequenas)
+*/
 nav .nav-group {
     display: flex;
     align-items: center;
@@ -37,6 +121,11 @@ nav .nav-group {
     flex-wrap: wrap;
 }
 
+/* ─── LOGO ───────────────────────────────────────────────────
+   Estilo do link do logo (nome da aplicação).
+   - transition: 0.3s → animação suave ao mudar de cor no hover
+   - text-decoration: none → remove o sublinhado padrão de links
+*/
 .logo a{
     font-size: 1.4rem;
     font-weight: bold;
@@ -49,6 +138,13 @@ nav .nav-group {
     color: white;
 }
 
+/* ─── LINKS DE NAVEGAÇÃO ─────────────────────────────────────
+   Lista de links do menu (Produtos, Categorias, Histórico, etc.)
+
+   - list-style: none → remove as bolinhas da lista <ul>
+   - display: flex → coloca os itens lado a lado (horizontal)
+   - gap: 1.5rem → espaçamento entre cada link
+*/
 .nav-links {
     list-style: none;
     display: flex;
@@ -68,7 +164,34 @@ nav .nav-group {
     color: white;
 }
 
-/*ESTRUTURA PRINCIPAL DO CORPO DA PÁGINA*/
+/* ═══════════════════════════════════════════════════════════════
+   ESTRUTURA PRINCIPAL DO LAYOUT
+   ═══════════════════════════════════════════════════════════════
+
+   A aplicação usa um layout de DUAS COLUNAS em várias páginas:
+   - aside-1 (esquerda): formulário de cadastro
+   - aside-2 (direita): tabela com dados cadastrados
+
+   Algumas páginas usam layout de COLUNA ÚNICA:
+   - content-full: ocupa toda a largura (ex: HistoryPage, PurchasePage)
+
+   CONCEITO: FLEXBOX
+   Flexbox é um sistema de layout CSS que facilita distribuir
+   espaço entre itens em um container. Os principais conceitos:
+   - display: flex → ativa o flexbox no container
+   - flex: 1 → o item cresce para ocupar espaço disponível
+   - gap → espaçamento entre os itens
+   - flex-wrap: wrap → permite quebra de linha quando não cabe
+
+   CONEXÃO: SidebarLayout.js usa .container + .aside-1 + .aside-2
+            FullWidthLayout.js usa .container + .content-full
+*/
+
+/* Container principal que envolve o conteúdo da página (abaixo do nav)
+   - align-items: stretch → faz os filhos terem a mesma altura
+   - flex: 1 → ocupa todo o espaço vertical restante
+   - padding: espaçamento interno (sem padding no topo, pois o nav já tem margin-bottom)
+*/
 .container {
     display: flex;
     align-items: stretch; 
@@ -78,6 +201,11 @@ nav .nav-group {
     flex-wrap: wrap;
 }
 
+/* Coluna esquerda (formulários)
+   - flex: 1 1 300px → cresce (1), encolhe (1), tamanho base mínimo (300px)
+     Isso significa: "ocupe o espaço disponível, mas nunca fique menor que 300px"
+   - flex-direction: column → empilha os elementos verticalmente
+*/
 .aside-1 {
     flex: 1 1 300px;
     display: flex;
@@ -85,6 +213,12 @@ nav .nav-group {
     gap: 2px;
 }
 
+/* Coluna direita (tabelas)
+   - border-left: linha divisória visual entre as colunas
+   - padding-left: espaço entre a linha e o conteúdo
+   - overflow-x: auto → se a tabela for muito larga, permite scroll horizontal
+     ao invés de quebrar o layout
+*/
 .aside-2 {
     flex: 1 1 300px;
     border-left: 1px solid #eee;
@@ -94,6 +228,10 @@ nav .nav-group {
     overflow-x: auto;
 }
 
+/* Layout de coluna única (páginas sem sidebar)
+   - width: 100% → ocupa toda a largura
+   - flex: 1 → cresce verticalmente para preencher o espaço
+*/
 .content-full {
     width: 100%;
     display: flex;
@@ -102,7 +240,25 @@ nav .nav-group {
     overflow-x: auto;
 }
 
-/* RESPONSIVIDADE */
+/* ═══════════════════════════════════════════════════════════════
+   RESPONSIVIDADE — Adaptação para telas menores
+   ═══════════════════════════════════════════════════════════════
+
+   @media é uma "media query" — aplica estilos APENAS quando a
+   condição é verdadeira. Aqui: quando a tela tem no máximo 900px
+   de largura (tablets e celulares).
+
+   CONCEITO: MOBILE FIRST vs DESKTOP FIRST
+   Este projeto usa "Desktop First": os estilos padrão são para
+   telas grandes, e usamos @media para ADAPTAR para telas menores.
+   A abordagem oposta (Mobile First) define estilos para mobile
+   primeiro e usa @media (min-width) para telas maiores.
+
+   O QUE MUDA EM TELAS PEQUENAS:
+   - O layout de duas colunas vira UMA coluna (empilhado)
+   - A borda entre as colunas desaparece
+   - O padding diminui para aproveitar mais espaço
+*/
 @media (max-width: 900px) {
     .container {
         flex-direction: column; 
