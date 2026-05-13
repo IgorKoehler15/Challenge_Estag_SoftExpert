@@ -1,65 +1,9 @@
-/**
- * ============================================================
- * ARQUIVO: styles/tables.css — ESTILOS DE TABELAS DE DADOS
- * ============================================================
- *
- * Este arquivo define a aparência de TODAS as tabelas da aplicação.
- * Tabelas são usadas para exibir listas de dados (produtos,
- * categorias, itens de compra, histórico).
- *
- * ESTRUTURA DE UMA TABELA HTML:
- * <table>
- *   <thead>         ← cabeçalho (títulos das colunas)
- *     <tr>          ← linha (table row)
- *       <th>Nome</th>  ← célula de cabeçalho (table header)
- *       <th>Preço</th>
- *     </tr>
- *   </thead>
- *   <tbody>         ← corpo (dados)
- *     <tr>
- *       <td>Arroz</td>  ← célula de dados (table data)
- *       <td>R$ 5,99</td>
- *     </tr>
- *   </tbody>
- * </table>
- *
- * CONEXÃO COM OUTROS ARQUIVOS:
- * - Importado em index.js (terceiro CSS carregado)
- * - Usado pelo componente DataTable.js (organism)
- * - Cada página tem sua própria classe de tabela:
- *   .table-products (ProductsPage)
- *   .table-categories (CategoriesPage)
- *   .table-history (HistoryPage)
- *   .table-purchase (PurchasePage)
- *   .tabelaProdutos (HomePage — tabela de itens do carrinho)
- */
-
-/* ═══════════════════════════════════════════════════════════════
-   ESTILOS BASE DA TABELA
-   ═══════════════════════════════════════════════════════════════
-
-   - width: 100% → tabela ocupa toda a largura disponível
-   - border-collapse: collapse → remove espaço entre bordas das células
-     (sem isso, cada célula teria sua própria borda com gap entre elas)
-   - margin-bottom: 2rem → espaço abaixo da tabela
-*/
 table {
     width: 100%;
     border-collapse: collapse;
     margin-bottom: 2rem;
 }
 
-/* ─── CÉLULAS (th e td) ──────────────────────────────────────
-   Estilos compartilhados entre cabeçalho e dados.
-
-   - padding: 12px 8px → espaço interno (12px vertical, 8px horizontal)
-   - border-bottom: linha sutil separando cada linha da tabela
-   - text-align: left → texto alinhado à esquerda (padrão)
-   - white-space: nowrap → texto NÃO quebra linha dentro da célula
-     (evita que nomes longos "empurrem" a tabela para baixo)
-   - word-break: break-word → se o texto for MUITO longo e não couber,
-     quebra a palavra (fallback de segurança)
-*/
 table th, table td {
     padding: 12px 8px; 
     border-bottom: 1px solid #ddd;
@@ -69,22 +13,11 @@ table th, table td {
     word-break: break-word;
 }
 
-/* Cabeçalho com borda mais grossa para destaque visual */
 table th {
     font-weight: bold;
     border-bottom: 2px solid #ddd;
 }
 
-/* ─── BOTÕES DENTRO DAS TABELAS ──────────────────────────────
-   Botões de ação nas tabelas (ex: "Excluir", "Ver Detalhes").
-
-   - width: 100% + max-width: 80px → ocupa o espaço da célula,
-     mas nunca fica maior que 80px
-   - margin: 0 auto → centraliza horizontalmente na célula
-   - display: block → necessário para margin auto funcionar
-
-   CONEXÃO: DataTable.js renderiza esses botões nas últimas colunas
-*/
 table td button {
     width: 100%;
     max-width: 80px;
@@ -97,19 +30,10 @@ table td button {
     cursor: pointer;
 }
 
-/* Remove sublinhado de links dentro de tabelas */
 table td a {
     text-decoration: none;
 }
 
-/* ─── LINHA DE PREENCHIMENTO ─────────────────────────────────
-   "Filler row" é uma linha vazia que preenche o espaço restante
-   da tabela quando há poucos dados. Isso mantém o layout
-   consistente independente da quantidade de itens.
-
-   - height: 100% → ocupa todo o espaço vertical restante
-   - border-bottom: none → sem borda (é invisível)
-*/
 .filler-row {
     height: 100%;
 }
@@ -118,36 +42,6 @@ table td a {
     border-bottom: none;
 }
 
-/* ═══════════════════════════════════════════════════════════════
-   LARGURAS DE COLUNAS POR TIPO DE TABELA
-   ═══════════════════════════════════════════════════════════════
-
-   Cada tabela tem proporções diferentes de colunas, definidas
-   usando o seletor :nth-child(n) que seleciona o n-ésimo filho.
-
-   CONCEITO: :nth-child()
-   É uma pseudo-classe que seleciona elementos pela POSIÇÃO.
-   - :nth-child(1) → primeiro elemento (1ª coluna)
-   - :nth-child(2) → segundo elemento (2ª coluna)
-   - E assim por diante...
-
-   POR QUE DEFINIR LARGURAS FIXAS?
-   Sem larguras definidas, o navegador distribui o espaço baseado
-   no conteúdo. Isso pode causar colunas "pulando" de tamanho
-   quando os dados mudam. Larguras fixas garantem layout estável.
-*/
-
-/* ─── TABELA DE PRODUTOS NA HOME (carrinho de compras) ───────
-   Colunas: Produto | Preço | Qtd | Desconto | Total | Ação
-   Proporções: 40% | 12% | 12% | 12% | 12% | 12%
-
-   - border-left: 1px solid #eee → separador visual entre colunas
-   - text-align: right → valores numéricos alinhados à direita
-     (padrão contábil — facilita comparação de valores)
-   - text-align: center → botão de ação centralizado
-
-   CONEXÃO: HomePage.js → DataTable com classe "tabelaProdutos"
-*/
 table.tabelaProdutos th:nth-child(1), table.tabelaProdutos td:nth-child(1) { width: 40%; }
 table.tabelaProdutos th:nth-child(2), table.tabelaProdutos td:nth-child(2) { width: 12%; border-left: 1px solid #eee; text-align: right;}
 table.tabelaProdutos th:nth-child(3), table.tabelaProdutos td:nth-child(3) { width: 12%; border-left: 1px solid #eee; text-align: right; }
@@ -155,12 +49,6 @@ table.tabelaProdutos th:nth-child(4), table.tabelaProdutos td:nth-child(4) { wid
 table.tabelaProdutos th:nth-child(5), table.tabelaProdutos td:nth-child(5) { width: 12%; border-left: 1px solid #eee; text-align: right; }
 table.tabelaProdutos th:nth-child(6), table.tabelaProdutos td:nth-child(6) { width: 12%; border-left: 1px solid #eee; text-align: center; }
 
-/* ─── TABELA DE PRODUTOS (página de cadastro) ────────────────
-   Colunas: Código | Nome | Preço | Categoria | Estoque | Ação
-   Proporções: 10% | 50% | 15% | 15% | 15% | 15%
-
-   CONEXÃO: ProductsPage.js → DataTable com classe "table-products"
-*/
 .table-products th:nth-child(1), .table-products td:nth-child(1) { width: 10%; }
 .table-products th:nth-child(2), .table-products td:nth-child(2) { width: 50%; border-left: 1px solid #eee; text-align: left;}
 .table-products th:nth-child(3), .table-products td:nth-child(3) { width: 15%; border-left: 1px solid #eee; text-align: right;}
@@ -168,51 +56,21 @@ table.tabelaProdutos th:nth-child(6), table.tabelaProdutos td:nth-child(6) { wid
 .table-products th:nth-child(5), .table-products td:nth-child(5) { width: 15%; border-left: 1px solid #eee; text-align: right;}
 .table-products th:nth-child(6), .table-products td:nth-child(6) { width: 15%; border-left: 1px solid #eee; text-align: center; }
 
-/* ─── TABELA DE CATEGORIAS ───────────────────────────────────
-   Colunas: Código | Nome | Produtos | Ação
-   Proporções: 15% | 55% | 15% | 15%
-
-   CONEXÃO: CategoriesPage.js → DataTable com classe "table-categories"
-*/
 .table-categories th:nth-child(1), .table-categories td:nth-child(1) { width: 15%; }
 .table-categories th:nth-child(2), .table-categories td:nth-child(2) { width: 55%; border-left: 1px solid #eee;}
 .table-categories th:nth-child(3), .table-categories td:nth-child(3) { width: 15%; border-left: 1px solid #eee; text-align: right;}
 .table-categories th:nth-child(4), .table-categories td:nth-child(4) { width: 15%; border-left: 1px solid #eee; text-align: center; }
 
-/* ─── TABELA DE HISTÓRICO ────────────────────────────────────
-   Colunas: Código | Data | Valor | Ação
-   Proporções: 20% | 30% | 30% | 20%
-
-   CONEXÃO: HistoryPage.js → DataTable com classe "table-history"
-*/
 .table-history th:nth-child(1), .table-history td:nth-child(1) { width: 20%; }
 .table-history th:nth-child(2), .table-history td:nth-child(2) { width: 30%; border-left: 1px solid #eee; }
 .table-history th:nth-child(3), .table-history td:nth-child(3) { width: 30%; border-left: 1px solid #eee; }
 .table-history th:nth-child(4), .table-history td:nth-child(4) { width: 20%; border-left: 1px solid #eee; text-align: center; }
 
-/* ─── TABELA DE DETALHES DA COMPRA ───────────────────────────
-   Colunas: Produto | Preço Unit. | Quantidade | Subtotal
-   Proporções: 55% | 15% | 15% | 15%
-
-   CONEXÃO: PurchasePage.js → DataTable com classe "table-purchase"
-*/
 table.table-purchase th:nth-child(1), table.table-purchase td:nth-child(1) { width: 55%; } 
 table.table-purchase th:nth-child(2), table.table-purchase td:nth-child(2),
 table.table-purchase th:nth-child(3), table.table-purchase td:nth-child(3) { width: 15%; border-left: 1px solid #eee; text-align: right;}
 table.table-purchase th:nth-child(4), table.table-purchase td:nth-child(4) { width: 15%; border-left: 1px solid #eee; text-align: center;}
 
-/* ═══════════════════════════════════════════════════════════════
-   RESPONSIVIDADE — Telas pequenas (celulares)
-   ═══════════════════════════════════════════════════════════════
-
-   Em telas menores que 600px:
-   - Reduz padding e fonte para caber mais conteúdo
-   - Botões ficam menores
-
-   NOTA: As tabelas já têm overflow-x: auto no container pai
-   (definido em global.css), então se ainda não couber, o usuário
-   pode fazer scroll horizontal. Isso é melhor que quebrar o layout.
-*/
 @media (max-width: 600px) {
     table th, table td {
         padding: 8px 4px; 
