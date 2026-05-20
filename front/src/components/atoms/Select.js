@@ -1,3 +1,5 @@
+import PropTypes from 'prop-types';
+
 // Componente atômico de select (dropdown)
 // Recebe uma lista de opções (options) e um placeholder opcional
 export default function Select({ options, placeholder, ...props }) {
@@ -19,3 +21,15 @@ export default function Select({ options, placeholder, ...props }) {
     </select>
   );
 }
+
+Select.propTypes = {
+  options: PropTypes.arrayOf(
+    PropTypes.shape({
+      value: PropTypes.string.isRequired,
+      label: PropTypes.string.isRequired,
+    })
+  ).isRequired,
+  placeholder: PropTypes.string,
+  value: PropTypes.string,
+  onChange: PropTypes.func,
+};

@@ -1,7 +1,8 @@
 import { useEffect, useRef, useCallback } from 'react';
+import logger from '../utils/logger';
 
 // Hook customizado de proteção contra manipulação indevida do DOM
-// Detecta alterações não autorizadas no HTML (ex: via DevTools) e recarrega a página
+// Detecta alterações não autorizadas em atributos de inputs (ex: via DevTools)
 export default function useDomProtection() {
 
   // Flag que indica se o React está atualizando o DOM (evita falsos positivos)
@@ -29,8 +30,47 @@ export default function useDomProtection() {
       let unauthorizedTampering = false;
 
       for (const mutation of mutations) {
-        const target = mutation.target; 
+        const target = mutation.target;
 
+        // Detecta alteração direta de texto (ex: editar conteúdo de <td>, <span>, <button> via DevTools)
+        if (mutation.type === 'characterData') {
+          logger.warn('Fraud attempt blocked! Text content was tampered with.');
+          unauthorizedTampering = true;
+          break;
+        }
+
+        // Detecta inserção/remoção de nós filhos (ex: deletar linhas da tabela, adicionar elementos)
+        if (mutation.type === 'childList') {
+          // Ignora mudanças no container principal (React gerencia isso nas navegações)
+          const parentTag = target.tagName;
+          if (parentTag === 'DIV' && target.id === 'root') continue;
+
+          // Detecta remoção de nós que não são text nodes vazios
+          if (mutation.removedNodes.length > 0) {
+            for (const node of mutation.removedNodes) {
+              if (node.nodeType === Node.ELEMENT_NODE) {
+                logger.warn('Fraud attempt blocked! DOM element was removed.');
+                unauthorizedTampering = true;
+                break;
+              }
+            }
+          }
+
+          // Detecta adição de nós que não são do React
+          if (!unauthorizedTampering && mutation.addedNodes.length > 0) {
+            for (const node of mutation.addedNodes) {
+              if (node.nodeType === Node.ELEMENT_NODE && !node.hasAttribute('data-reactroot')) {
+                logger.warn('Fraud attempt blocked! Unauthorized DOM element was added.');
+                unauthorizedTampering = true;
+                break;
+              }
+            }
+          }
+
+          if (unauthorizedTampering) break;
+        }
+
+        // Foca em alterações de atributos suspeitas
         if (mutation.type === 'attributes') {
           const attrName = mutation.attributeName;
 
@@ -41,29 +81,36 @@ export default function useDomProtection() {
               attrName.startsWith('__react') ||
               attrName === 'value' ||
               attrName === 'class' ||
-              attrName === 'style')
+              attrName === 'style' ||
+              attrName === 'disabled' ||
+              attrName === 'readonly' ||
+              attrName === 'aria-hidden')
           ) {
-            continue; 
+            continue;
           }
 
-          // Detecta tentativa de alterar o tipo de um input (ex: text → hidden)
+          // Detecta tentativa de alterar o tipo de um input (ex: text -> hidden)
           if (attrName === 'type' && target.tagName === 'INPUT') {
-            console.warn('Fraud attempt blocked! Input type attribute was tampered with.');
+            logger.warn('Fraud attempt blocked! Input type attribute was tampered with.');
             unauthorizedTampering = true;
-            break; 
+            break;
           }
-        }
 
-        // Qualquer adição/remoção de nós ou alteração de texto é considerada suspeita
-        if (mutation.type === 'childList' || mutation.type === 'characterData') {
-          unauthorizedTampering = true;
-          break;
+          // Detecta alteração de atributos sensíveis em inputs (name, id, max, min, step)
+          if (
+            target.tagName === 'INPUT' &&
+            ['name', 'id', 'max', 'min', 'step', 'maxlength', 'pattern'].includes(attrName)
+          ) {
+            logger.warn(`Suspicious attribute change detected: "${attrName}" on input.`);
+            unauthorizedTampering = true;
+            break;
+          }
         }
       }
 
       // Se detectou manipulação não autorizada, recarrega a página
       if (unauthorizedTampering) {
-        console.warn('Unauthorized HTML manipulation detected! Reloading the page...');
+        logger.warn('Unauthorized HTML manipulation detected! Reloading the page...');
         observer.disconnect();
         window.location.reload();
       }
@@ -74,10 +121,11 @@ export default function useDomProtection() {
     const rootElement = document.getElementById('root');
     if (rootElement) {
       observer.observe(rootElement, {
-        childList: true,
         subtree: true,
-        characterData: true,
+        childList: true,
         attributes: true,
+        characterData: true,
+        attributeFilter: ['type', 'name', 'id', 'max', 'min', 'step', 'maxlength', 'pattern'],
       });
     }
 
@@ -90,7 +138,7 @@ export default function useDomProtection() {
       clearTimeout(timer);
       observer.disconnect();
     };
-  }, []); 
+  }, []);
 
   return { pauseProtection, resumeProtection };
 }

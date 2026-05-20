@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import FormGroup from '../molecules/FormGroup';
 import InputRow from '../molecules/InputRow';
 import Input from '../atoms/Input';
@@ -45,3 +46,11 @@ export default function CategoryForm({
     </aside>
   );
 }
+
+CategoryForm.propTypes = {
+  categoryName: PropTypes.string.isRequired,
+  tax: PropTypes.string.isRequired,
+  onNameChange: PropTypes.func.isRequired,
+  onTaxChange: PropTypes.func.isRequired,
+  onAdd: PropTypes.func.isRequired,
+};

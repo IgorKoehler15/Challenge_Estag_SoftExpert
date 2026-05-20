@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import FormGroup from '../molecules/FormGroup';
 import InputRow from '../molecules/InputRow';
 import Input from '../atoms/Input';
@@ -74,3 +75,22 @@ export default function ProductForm({
     </aside>
   );
 }
+
+ProductForm.propTypes = {
+  productName: PropTypes.string.isRequired,
+  amount: PropTypes.string.isRequired,
+  unitPrice: PropTypes.string.isRequired,
+  categoryOptions: PropTypes.arrayOf(
+    PropTypes.shape({
+      value: PropTypes.string.isRequired,
+      label: PropTypes.string.isRequired,
+    })
+  ).isRequired,
+  selectedCategory: PropTypes.string.isRequired,
+  onNameChange: PropTypes.func.isRequired,
+  onAmountChange: PropTypes.func.isRequired,
+  onPriceChange: PropTypes.func.isRequired,
+  onCategoryChange: PropTypes.func.isRequired,
+  onAdd: PropTypes.func.isRequired,
+  disabled: PropTypes.bool,
+};

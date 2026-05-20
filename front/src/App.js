@@ -24,13 +24,13 @@ function ProtectedRoutes() {
 
   // Retoma a proteção após cada render finalizado
   useEffect(() => {
-    resumeProtection(300); 
+    resumeProtection(500); 
   });
 
   // Pausa e retoma a proteção ao navegar entre páginas (mudança de rota)
   useEffect(() => {
     pauseProtection();
-    resumeProtection(500); 
+    resumeProtection(800); 
   }, [location, pauseProtection, resumeProtection]);
 
   // Definição das rotas da aplicação

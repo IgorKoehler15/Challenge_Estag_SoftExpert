@@ -6,7 +6,9 @@ import HomeForm from '../organisms/HomeForm';
 import DataTable from '../organisms/DataTable';
 import TotalsSection from '../organisms/TotalsSection';
 import Button from '../atoms/Button';
+import ErrorMessage from '../atoms/ErrorMessage';
 import * as api from '../../services/api';
+import logger from '../../utils/logger';
 
 // Chave usada para persistir o carrinho no localStorage
 const CART_KEY = 'suite_cart';
@@ -36,9 +38,11 @@ export default function HomePage() {
   const [tax, setTax] = useState('');
   const [price, setPrice] = useState('');
   const [cartLoaded, setCartLoaded] = useState(false);
+  const [error, setError] = useState(null);
 
   // Carrega produtos e categorias da API, e valida itens do carrinho salvo
   const loadData = useCallback(async () => {
+    setError(null);
     try {
       const [prods, cats] = await Promise.all([
         api.fetchProducts(),
@@ -57,8 +61,9 @@ export default function HomePage() {
       }
       setCart(valid);
       setCartLoaded(true);
-    } catch (error) {
-      console.error('Erro ao buscar dados do banco:', error);
+    } catch (err) {
+      logger.error('Erro ao buscar dados do banco:', err);
+      setError('Failed to load products. Please try again.');
     }
   }, []);
 
@@ -245,7 +250,9 @@ export default function HomePage() {
   );
 
   // Conteúdo principal: tabela do carrinho + totais + botões de ação
-  const content = (
+  const content = error ? (
+    <ErrorMessage message={error} onRetry={loadData} />
+  ) : (
     <>
       <DataTable
         className="tabelaProdutos"

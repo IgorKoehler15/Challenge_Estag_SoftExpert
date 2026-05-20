@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 export default function Header() {
   return (
     <header>
-      <nav>
+      <nav className="main-nav">
         <div className="nav-group">
           {/* Logo que redireciona para a página inicial */}
           <div className="logo">

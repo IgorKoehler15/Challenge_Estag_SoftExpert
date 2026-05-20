@@ -15,7 +15,10 @@ try {
     ]);
 
 } catch (PDOException $e) {
-    // Encerra a aplicação caso a conexão falhe
-    die("(Erro de Conexão): " . $e->getMessage());
+    // Retorna erro JSON padronizado e encerra com status 500
+    http_response_code(500);
+    header("Content-Type: application/json");
+    echo json_encode(["error" => "Database connection failed."]);
+    exit();
 }
 ?>

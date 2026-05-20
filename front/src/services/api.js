@@ -6,12 +6,23 @@ const ENDPOINTS = {
   history: '/history.php',
 };
 
+// Tenta parsear a resposta como JSON
+// Se falhar (ex: proxy retorna texto puro), lança um erro amigável
+async function parseJSON(response) {
+  const text = await response.text();
+  try {
+    return JSON.parse(text);
+  } catch {
+    throw new Error('Server unavailable. Please try again later.');
+  }
+}
+
 // ==================== PRODUTOS ====================
 
 // Busca todos os produtos ativos com estoque
 export async function fetchProducts() {
   const response = await fetch(ENDPOINTS.products);
-  const data = await response.json();
+  const data = await parseJSON(response);
   return Array.isArray(data) ? data : [];
 }
 
@@ -22,11 +33,11 @@ export async function createProduct(product) {
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(product),
   });
+  const data = await parseJSON(response);
   if (!response.ok) {
-    const err = await response.json();
-    throw new Error(err.error || 'Error saving product to server.');
+    throw new Error(data.error || 'Error saving product to server.');
   }
-  return response.json();
+  return data;
 }
 
 // Exclui um produto pelo código (soft ou hard delete no back-end)
@@ -34,7 +45,7 @@ export async function deleteProduct(code) {
   const response = await fetch(`${ENDPOINTS.products}?code=${code}`, {
     method: 'DELETE',
   });
-  const data = await response.json();
+  const data = await parseJSON(response);
   if (!response.ok) {
     throw new Error(data.error || 'Error deleting product on the server.');
   }
@@ -46,7 +57,7 @@ export async function deleteProduct(code) {
 // Busca todas as categorias ativas
 export async function fetchCategories() {
   const response = await fetch(ENDPOINTS.categories);
-  const data = await response.json();
+  const data = await parseJSON(response);
   return Array.isArray(data) ? data : [];
 }
 
@@ -57,11 +68,11 @@ export async function createCategory(category) {
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(category),
   });
+  const data = await parseJSON(response);
   if (!response.ok) {
-    const err = await response.json();
-    throw new Error(err.error || 'Error saving category to database.');
+    throw new Error(data.error || 'Error saving category to database.');
   }
-  return response.json();
+  return data;
 }
 
 // Exclui uma categoria pelo código
@@ -69,7 +80,7 @@ export async function deleteCategory(code) {
   const response = await fetch(`${ENDPOINTS.categories}?code=${code}`, {
     method: 'DELETE',
   });
-  const data = await response.json();
+  const data = await parseJSON(response);
   if (!response.ok) {
     throw new Error(data.error || 'The category could not be deleted.');
   }
@@ -86,8 +97,8 @@ export async function checkout(items) {
     body: JSON.stringify({ items }),
   });
   if (!response.ok) {
-    const err = await response.json();
-    throw new Error(err.error || 'Error processing purchase on the server.');
+    const data = await parseJSON(response);
+    throw new Error(data.error || 'Error processing purchase on the server.');
   }
   return response;
 }
@@ -97,7 +108,7 @@ export async function checkout(items) {
 // Busca a lista de todos os pedidos finalizados
 export async function fetchHistory() {
   const response = await fetch(ENDPOINTS.history);
-  const data = await response.json();
+  const data = await parseJSON(response);
   return Array.isArray(data) ? data : [];
 }
 
@@ -105,5 +116,5 @@ export async function fetchHistory() {
 export async function fetchPurchase(code) {
   const response = await fetch(`${ENDPOINTS.history}?code=${code}`);
   if (!response.ok) throw new Error('Order not found');
-  return response.json();
+  return parseJSON(response);
 }

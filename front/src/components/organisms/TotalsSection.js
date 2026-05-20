@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import TotalRow from '../molecules/TotalRow';
 
 // Seção de totais — exibe as linhas de subtotal, imposto e total geral
@@ -11,3 +12,12 @@ export default function TotalsSection({ rows }) {
     </div>
   );
 }
+
+TotalsSection.propTypes = {
+  rows: PropTypes.arrayOf(
+    PropTypes.shape({
+      label: PropTypes.string.isRequired,
+      value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+    })
+  ).isRequired,
+};

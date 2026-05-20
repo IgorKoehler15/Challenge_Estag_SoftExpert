@@ -1,13 +1,19 @@
+import { memo } from 'react';
+import PropTypes from 'prop-types';
+
 // Tabela de dados genérica e reutilizável
 // Recebe colunas (columns), linhas (rows) e exibe uma linha vazia se não houver dados
-export default function DataTable({ className, columns, rows, fillerCols }) {
+function DataTable({ className, columns, rows, fillerCols }) {
   
   // Define quantas colunas a linha de preenchimento deve ter
   const colCount = fillerCols || columns.length;
   const isEmpty = !rows || rows.length === 0;
 
+  // Combina a classe base com classes adicionais
+  const tableClasses = ['data-table', className].filter(Boolean).join(' ');
+
   return (
-    <table className={className || undefined}>
+    <table className={tableClasses}>
       {/* Cabeçalho da tabela com os nomes das colunas */}
       <thead>
         <tr>
@@ -39,3 +45,17 @@ export default function DataTable({ className, columns, rows, fillerCols }) {
     </table>
   );
 }
+
+DataTable.propTypes = {
+  className: PropTypes.string,
+  columns: PropTypes.arrayOf(PropTypes.string).isRequired,
+  rows: PropTypes.arrayOf(
+    PropTypes.shape({
+      key: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+      cells: PropTypes.array.isRequired,
+    })
+  ),
+  fillerCols: PropTypes.number,
+};
+
+export default memo(DataTable);

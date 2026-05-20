@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import SummaryItem from '../molecules/SummaryItem';
 
 // Card de resumo que renderiza uma lista de itens informativos (label + valor)
@@ -18,3 +19,14 @@ export default function SummaryCard({ items }) {
     </div>
   );
 }
+
+SummaryCard.propTypes = {
+  items: PropTypes.arrayOf(
+    PropTypes.shape({
+      label: PropTypes.string.isRequired,
+      value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+      valueClassName: PropTypes.string,
+      hidden: PropTypes.bool,
+    })
+  ).isRequired,
+};

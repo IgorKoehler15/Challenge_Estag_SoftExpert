@@ -19,7 +19,7 @@ body {
     min-height: 100vh;
 }
 
-nav {
+.main-nav {
     width: 100%;
     padding: 0.8rem 2rem;
     background-color: #6A65FF;
@@ -28,7 +28,7 @@ nav {
     align-items: center;
 }
 
-nav .nav-group {
+.main-nav .nav-group {
     display: flex;
     align-items: center;
     gap: 2rem;

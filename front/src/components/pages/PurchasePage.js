@@ -1,25 +1,27 @@
 import { useState, useEffect } from 'react';
 
-import { useSearchParams, Link } from 'react-router-dom';
+import { useSearchParams, Link, useNavigate } from 'react-router-dom';
 import FullWidthLayout from '../templates/FullWidthLayout';
 import SummaryCard from '../organisms/SummaryCard';
 import DataTable from '../organisms/DataTable';
 import TotalsSection from '../organisms/TotalsSection';
 import Button from '../atoms/Button';
 import * as api from '../../services/api';
+import logger from '../../utils/logger';
 
 // Página de detalhes de uma compra específica (acessada via histórico)
 export default function PurchasePage() {
 
   const [searchParams] = useSearchParams();
   const [purchase, setPurchase] = useState(null);
+  const navigate = useNavigate();
 
   // Obtém o código do pedido pela URL e carrega os detalhes da API
   useEffect(() => {
     const code = searchParams.get('code');
     if (!code) {
       alert('Purchase not found!');
-      window.location.href = '/history';
+      navigate('/history');
       return; 
     }
 
@@ -28,13 +30,13 @@ export default function PurchasePage() {
         const data = await api.fetchPurchase(code);
         setPurchase(data);
       } catch (error) {
-        console.error('Error when searching:', error);
+        logger.error('Error when searching:', error);
         alert('Error retrieving order details.');
-        window.location.href = '/history';
+        navigate('/history');
       }
     };
     load();
-  }, [searchParams]);
+  }, [searchParams, navigate]);
 
   // Não renderiza nada enquanto os dados não carregarem
   if (!purchase) return null;

@@ -3,7 +3,10 @@ import SidebarLayout from '../templates/SidebarLayout';
 import CategoryForm from '../organisms/CategoryForm';
 import DataTable from '../organisms/DataTable';
 import Button from '../atoms/Button';
+import ErrorMessage from '../atoms/ErrorMessage';
 import * as api from '../../services/api';
+import { validateName, validateTax } from '../../utils/validation';
+import logger from '../../utils/logger';
 
 // Página de gerenciamento de categorias (listagem, criação e exclusão)
 export default function CategoriesPage() {
@@ -12,14 +15,17 @@ export default function CategoriesPage() {
   const [categories, setCategories] = useState([]);
   const [categoryName, setCategoryName] = useState('');
   const [tax, setTax] = useState('');
+  const [error, setError] = useState(null);
 
   // Busca as categorias da API e atualiza o estado
   const loadCategories = useCallback(async () => {
+    setError(null);
     try {
       const data = await api.fetchCategories();
       setCategories(data);
-    } catch (error) {
-      console.error('Error searching for categories:', error);
+    } catch (err) {
+      logger.error('Error searching for categories:', err);
+      setError('Failed to load categories. Please try again.');
     }
   }, []);
 
@@ -33,30 +39,19 @@ export default function CategoriesPage() {
     const nameRaw = categoryName.replace(/\s+/g, ' ').trim();
     const taxRaw = tax.trim();
 
-    // Validação do nome: tamanho entre 1 e 30 caracteres
-    if (nameRaw.length === 0 || nameRaw.length > 30)
-      return alert('Category name must be between 1 and 30 characters.');
-
-    // Validação do nome: deve conter ao menos uma letra
-    const nameRegex = /^(?=.*[a-zA-ZÀ-ÿ])[a-zA-ZÀ-ÿ0-9 ]+$/;
-    if (!nameRegex.test(nameRaw))
-      return alert('Invalid Category Name! It cannot contain only numbers or special characters!');
+    // Validação do nome
+    const nameError = validateName(nameRaw, 'Category name');
+    if (nameError) return alert(nameError);
 
     // Verifica duplicidade local (case insensitive)
     if (categories.some((c) => c.name.replace(/\s+/g, ' ').toLowerCase() === nameRaw.toLowerCase()))
       return alert('This category already exists!');
 
-    // Validação da taxa: formato numérico com até 2 casas decimais
-    if (taxRaw.length === 0 || taxRaw.length > 5)
-      return alert('Tax must have between 1 and 5 characters (e.g., 10 or 25.50).');
-
-    const taxRegex = /^\d+(\.\d{1,2})?$/;
-    if (!taxRegex.test(taxRaw))
-      return alert('Invalid Tax format! Use numbers separated by a dot (e.g., 10 or 25.50).');
+    // Validação da taxa
+    const taxError = validateTax(taxRaw);
+    if (taxError) return alert(taxError);
 
     const taxValue = parseFloat(taxRaw);
-    if (isNaN(taxValue) || taxValue < 0 || taxValue > 100)
-      return alert('Tax must be a valid number between 0 and 100.');
 
     try {
       await api.createCategory({ name: nameRaw, tax: taxValue });
@@ -109,7 +104,9 @@ export default function CategoriesPage() {
   );
 
   // Conteúdo principal: tabela de categorias
-  const content = (
+  const content = error ? (
+    <ErrorMessage message={error} onRetry={loadCategories} />
+  ) : (
     <DataTable
       className="table-categories"
       columns={['Code', 'Category', 'Tax', 'Actions']}

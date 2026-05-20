@@ -3,7 +3,10 @@ import SidebarLayout from '../templates/SidebarLayout';
 import ProductForm from '../organisms/ProductForm';
 import DataTable from '../organisms/DataTable';
 import Button from '../atoms/Button';
+import ErrorMessage from '../atoms/ErrorMessage';
 import * as api from '../../services/api';
+import { validateName, validateAmount, validatePrice, parsePrice } from '../../utils/validation';
+import logger from '../../utils/logger';
 
 // Página de gerenciamento de produtos (listagem, criação e exclusão)
 export default function ProductsPage() {
@@ -14,9 +17,11 @@ export default function ProductsPage() {
   const [unitPrice, setUnitPrice] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('');
   const [addDisabled, setAddDisabled] = useState(false);
+  const [error, setError] = useState(null);
 
   // Carrega produtos e categorias da API
   const loadData = useCallback(async () => {
+    setError(null);
     try {
       const [prods, cats] = await Promise.all([
         api.fetchProducts(),
@@ -24,8 +29,9 @@ export default function ProductsPage() {
       ]);
       setProducts(prods);
       setCategoriesList(cats);
-    } catch (error) {
-      console.error('Error loading data:', error);
+    } catch (err) {
+      logger.error('Error loading data:', err);
+      setError('Failed to load products. Please try again.');
     }
   }, []);
 
@@ -47,39 +53,22 @@ export default function ProductsPage() {
     const categoryCode = parseInt(selectedCategory, 10);
 
     // Validação do nome: tamanho e formato
-    if (name.length === 0 || name.length > 30)
-      return alert('Product name must be between 1 and 30 characters.');
-
-    const nameRegex = /^(?=.*[a-zA-ZÀ-ÿ])[a-zA-ZÀ-ÿ0-9 ]+$/;
-    if (!nameRegex.test(name))
-      return alert('Invalid Product Name! It must contain at least one letter.');
+    const nameError = validateName(name, 'Product name');
+    if (nameError) return alert(nameError);
 
     // Verifica duplicidade local
     if (products.some((p) => p.name.toLowerCase() === name.toLowerCase()))
       return alert('Product already exists!');
 
-    // Validação da quantidade: inteiro positivo até 9999
-    if (amountRaw.length === 0 || amountRaw.length > 5)
-      return alert('Amount is invalid or too large.');
-
-    const amountRegex = /^\d+$/;
-    if (!amountRegex.test(amountRaw)) return alert('Invalid Amount! Use only integers.');
+    // Validação da quantidade
+    const amountError = validateAmount(amountRaw);
+    if (amountError) return alert(amountError);
     const qty = parseInt(amountRaw, 10);
-    if (isNaN(qty) || qty <= 0 || qty > 9999)
-      return alert('Amount must be between 1 and 9999.');
 
-    // Validação do preço: formato numérico com até 2 casas decimais
-    if (priceRaw.length === 0 || priceRaw.length > 10)
-      return alert('Price is invalid or too large.');
-
-    const normalizedPrice = priceRaw.replace(',', '.');
-
-    const priceRegex = /^\d+(\.\d{1,2})?$/;
-    if (!priceRegex.test(normalizedPrice))
-      return alert('Invalid Price format! Use e.g., 10 or 25.50');
-    const priceVal = parseFloat(normalizedPrice);
-    if (isNaN(priceVal) || priceVal <= 0 || priceVal > 99999.99)
-      return alert('Price must be between 0.01 and 99999.99.');
+    // Validação do preço
+    const priceError = validatePrice(priceRaw);
+    if (priceError) return alert(priceError);
+    const priceVal = parsePrice(priceRaw);
 
     if (isNaN(categoryCode)) return alert('Please select a category.');
 
@@ -179,7 +168,9 @@ export default function ProductsPage() {
   );
 
   // Conteúdo principal: tabela de produtos
-  const content = (
+  const content = error ? (
+    <ErrorMessage message={error} onRetry={loadData} />
+  ) : (
     <DataTable
       className="table-products"
       columns={['Code', 'Product', 'Category', 'Price', 'Amount', 'Actions']}
