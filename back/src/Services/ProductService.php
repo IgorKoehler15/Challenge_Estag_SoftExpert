@@ -53,12 +53,20 @@ class ProductService
             throw new InvalidArgumentException("The specified category does not exist or is inactive.");
         }
 
-        // Verifica duplicidade de nome
+        // Verifica se já existe um produto ativo com estoque > 0 com o mesmo nome
         if ($this->productRepo->existsActiveByName($name)) {
             throw new InvalidArgumentException("An active product with this name already exists!");
         }
 
-        // Gera códigos e insere
+        // Verifica se existe um produto ativo com estoque zerado (reabastecimento)
+        $outOfStock = $this->productRepo->findActiveOutOfStockByName($name);
+        if ($outOfStock) {
+            // Atualiza o produto existente com novo estoque, preço e categoria
+            $this->productRepo->restock((int) $outOfStock['code'], $amount, $price, $categoryCode);
+            return;
+        }
+
+        // Gera códigos e insere novo produto
         $nextDisplay = $this->productRepo->getNextDisplayCode();
         $nextCode = $this->productRepo->getNextCode();
 

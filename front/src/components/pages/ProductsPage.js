@@ -56,7 +56,7 @@ export default function ProductsPage() {
     const nameError = validateName(name, 'Product name');
     if (nameError) return alert(nameError);
 
-    // Verifica duplicidade local
+    // Verifica duplicidade local (apenas produtos com estoque visível)
     if (products.some((p) => p.name.toLowerCase() === name.toLowerCase()))
       return alert('Product already exists!');
 

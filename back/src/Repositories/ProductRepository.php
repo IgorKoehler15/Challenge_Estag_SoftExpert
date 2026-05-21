@@ -32,7 +32,7 @@ class ProductRepository
         return $result ?: null;
     }
 
-    // Verifica se já existe um produto ativo com o mesmo nome
+    // Verifica se já existe um produto ativo com o mesmo nome (com estoque)
     public function existsActiveByName(string $name): bool
     {
         $stmt = $this->pdo->prepare(
@@ -40,6 +40,31 @@ class ProductRepository
         );
         $stmt->execute([':name' => $name]);
         return (bool) $stmt->fetch();
+    }
+
+    // Busca um produto ativo com estoque zerado pelo nome (para reabastecimento)
+    public function findActiveOutOfStockByName(string $name): ?array
+    {
+        $stmt = $this->pdo->prepare(
+            "SELECT code, display_code FROM products WHERE LOWER(name) = LOWER(:name) AND is_active = true AND amount = 0 LIMIT 1"
+        );
+        $stmt->execute([':name' => $name]);
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $result ?: null;
+    }
+
+    // Atualiza estoque, preço e categoria de um produto existente (reabastecimento)
+    public function restock(int $code, int $amount, float $price, int $categoryCode): void
+    {
+        $stmt = $this->pdo->prepare(
+            "UPDATE products SET amount = :amount, price = :price, category_code = :category_code, updated_at = CURRENT_TIMESTAMP WHERE code = :code"
+        );
+        $stmt->execute([
+            ':amount'        => $amount,
+            ':price'         => $price,
+            ':category_code' => $categoryCode,
+            ':code'          => $code
+        ]);
     }
 
     // Retorna o próximo display_code disponível
