@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import PropTypes from 'prop-types';
 import FormGroup from '../molecules/FormGroup';
 import InputRow from '../molecules/InputRow';
@@ -7,7 +8,7 @@ import Button from '../atoms/Button';
 
 // Formulário da página inicial (carrinho de compras)
 // Permite selecionar um produto, definir quantidade e visualizar imposto/preço (somente leitura)
-export default function HomeForm({
+const HomeForm = memo(function HomeForm({
   productOptions,
   selectedProduct,
   amount,
@@ -75,7 +76,7 @@ export default function HomeForm({
       </Button>
     </aside>
   );
-}
+});
 
 HomeForm.propTypes = {
   productOptions: PropTypes.arrayOf(
@@ -92,3 +93,5 @@ HomeForm.propTypes = {
   onAmountChange: PropTypes.func.isRequired,
   onAdd: PropTypes.func.isRequired,
 };
+
+export default HomeForm;

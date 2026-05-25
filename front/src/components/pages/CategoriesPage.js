@@ -17,6 +17,10 @@ export default function CategoriesPage() {
   const [tax, setTax] = useState('');
   const [error, setError] = useState(null);
 
+  // Callbacks estáveis para os handlers de onChange do formulário
+  const handleNameChange = useCallback((e) => setCategoryName(e.target.value), []);
+  const handleTaxChange = useCallback((e) => setTax(e.target.value), []);
+
   // Busca as categorias da API e atualiza o estado
   const loadCategories = useCallback(async () => {
     setError(null);
@@ -97,8 +101,8 @@ export default function CategoriesPage() {
     <CategoryForm
       categoryName={categoryName}
       tax={tax}
-      onNameChange={(e) => setCategoryName(e.target.value)}
-      onTaxChange={(e) => setTax(e.target.value)}
+      onNameChange={handleNameChange}
+      onTaxChange={handleTaxChange}
       onAdd={handleAdd}
     />
   );

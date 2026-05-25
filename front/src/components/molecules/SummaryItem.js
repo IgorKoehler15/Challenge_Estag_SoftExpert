@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import Label from '../atoms/Label';
 
 // Componente molecular que exibe um item de resumo (label + valor)
@@ -10,3 +11,10 @@ export default function SummaryItem({ label, value, valueClassName, hidden }) {
     </div>
   );
 }
+
+SummaryItem.propTypes = {
+  label: PropTypes.string.isRequired,
+  value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+  valueClassName: PropTypes.string,
+  hidden: PropTypes.bool,
+};

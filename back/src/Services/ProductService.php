@@ -23,28 +23,25 @@ class ProductService
     // Cria um novo produto após validar todos os campos
     public function create(array $data): void
     {
-        $name = isset($data['name']) ? trim($data['name']) : '';
-        $amount = isset($data['amount']) ? (int) $data['amount'] : -1;
-        $price = isset($data['price']) ? (float) $data['price'] : -1;
-        $categoryCode = isset($data['category_code']) ? (int) $data['category_code'] : 0;
+        $name = isset($data['name']) ? trim($data['name']) : null;
+        $amount = isset($data['amount']) ? (int) $data['amount'] : null;
+        $price = isset($data['price']) ? (float) $data['price'] : null;
+        $categoryCode = isset($data['category_code']) ? (int) $data['category_code'] : null;
 
-        // Validação do nome
-        if (empty($name)) {
+        // Validação de campos obrigatórios
+        if ($name === null || $name === '') {
             throw new InvalidArgumentException("Incomplete data.");
         }
 
-        // Validação da quantidade
-        if ($amount <= 0) {
+        if ($amount === null || $amount <= 0) {
             throw new InvalidArgumentException("The amount must be a positive integer.");
         }
 
-        // Validação do preço
-        if ($price <= 0) {
+        if ($price === null || $price <= 0) {
             throw new InvalidArgumentException("The price must be greater than zero.");
         }
 
-        // Validação do código da categoria
-        if ($categoryCode <= 0) {
+        if ($categoryCode === null || $categoryCode <= 0) {
             throw new InvalidArgumentException("A valid category code is required.");
         }
 

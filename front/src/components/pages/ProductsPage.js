@@ -19,6 +19,12 @@ export default function ProductsPage() {
   const [addDisabled, setAddDisabled] = useState(false);
   const [error, setError] = useState(null);
 
+  // Callbacks estáveis para os handlers de onChange do formulário
+  const handleNameChange = useCallback((e) => setProductName(e.target.value), []);
+  const handleAmountChange = useCallback((e) => setAmount(e.target.value), []);
+  const handlePriceChange = useCallback((e) => setUnitPrice(e.target.value), []);
+  const handleCategoryChange = useCallback((e) => setSelectedCategory(e.target.value), []);
+
   // Carrega produtos e categorias da API
   const loadData = useCallback(async () => {
     setError(null);
@@ -158,10 +164,10 @@ export default function ProductsPage() {
       unitPrice={unitPrice}
       categoryOptions={categoryOptions}
       selectedCategory={selectedCategory}
-      onNameChange={(e) => setProductName(e.target.value)}
-      onAmountChange={(e) => setAmount(e.target.value)}
-      onPriceChange={(e) => setUnitPrice(e.target.value)}
-      onCategoryChange={(e) => setSelectedCategory(e.target.value)}
+      onNameChange={handleNameChange}
+      onAmountChange={handleAmountChange}
+      onPriceChange={handlePriceChange}
+      onCategoryChange={handleCategoryChange}
       onAdd={handleAdd}
       disabled={addDisabled}
     />

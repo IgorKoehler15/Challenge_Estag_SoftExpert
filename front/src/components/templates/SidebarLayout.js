@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import Header from '../organisms/Header';
 
 // Template de layout com sidebar (formulário à esquerda, conteúdo à direita)
@@ -16,3 +17,8 @@ export default function SidebarLayout({ sidebar, content }) {
     </>
   );
 }
+
+SidebarLayout.propTypes = {
+  sidebar: PropTypes.node.isRequired,
+  content: PropTypes.node.isRequired,
+};

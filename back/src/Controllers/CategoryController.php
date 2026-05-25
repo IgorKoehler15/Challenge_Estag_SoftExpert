@@ -11,18 +11,18 @@ class CategoryController
         $this->service = new CategoryService($pdo);
     }
 
-    // Roteia a requisição para o método adequado
-    public function handle(string $method): void
+    // Roteia a requisição para o método adequado com base no HTTP method
+    public function handleRequest(string $httpMethod): void
     {
-        switch ($method) {
+        switch ($httpMethod) {
             case 'GET':
-                $this->index();
+                $this->listCategories();
                 break;
             case 'POST':
-                $this->store();
+                $this->createCategory();
                 break;
             case 'DELETE':
-                $this->destroy();
+                $this->deleteCategory();
                 break;
             default:
                 http_response_code(405);
@@ -31,7 +31,7 @@ class CategoryController
     }
 
     // GET — Lista todas as categorias ativas
-    private function index(): void
+    private function listCategories(): void
     {
         try {
             $categories = $this->service->listAll();
@@ -43,7 +43,7 @@ class CategoryController
     }
 
     // POST — Cria uma nova categoria
-    private function store(): void
+    private function createCategory(): void
     {
         try {
             $data = json_decode(file_get_contents("php://input"), true);
@@ -62,7 +62,7 @@ class CategoryController
     }
 
     // DELETE — Exclui uma categoria
-    private function destroy(): void
+    private function deleteCategory(): void
     {
         try {
             $code = isset($_GET['code']) ? (int) $_GET['code'] : 0;

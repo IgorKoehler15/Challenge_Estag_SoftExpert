@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 
 import { useNavigate } from 'react-router-dom';
 import SidebarLayout from '../templates/SidebarLayout';
@@ -40,6 +40,9 @@ export default function HomePage() {
   const [cartLoaded, setCartLoaded] = useState(false);
   const [error, setError] = useState(null);
 
+  // Callback estável para o handler de onChange da quantidade
+  const handleAmountChange = useCallback((e) => setAmount(e.target.value), []);
+
   // Carrega produtos e categorias da API, e valida itens do carrinho salvo
   const loadData = useCallback(async () => {
     setError(null);
@@ -79,7 +82,7 @@ export default function HomePage() {
   }, [cart, cartLoaded]);
 
   // Filtra produtos disponíveis (exclui os que já atingiram o limite no carrinho)
-  const buildProductOptions = () => {
+  const productOptions = useMemo(() => {
     return productsDb
       .filter((p) => {
         const inCart = cart.find(
@@ -92,7 +95,7 @@ export default function HomePage() {
         value: String(p.code),
         label: p.name.charAt(0).toUpperCase() + p.name.slice(1),
       }));
-  };
+  }, [productsDb, cart]);
 
   // Ao selecionar um produto, preenche automaticamente imposto e preço
   const handleProductChange = (e) => {
@@ -238,13 +241,13 @@ export default function HomePage() {
   // Sidebar: formulário para adicionar produtos ao carrinho
   const sidebar = (
     <HomeForm
-      productOptions={buildProductOptions()}
+      productOptions={productOptions}
       selectedProduct={selectedProduct}
       amount={amount}
       tax={tax}
       price={price}
       onProductChange={handleProductChange}
-      onAmountChange={(e) => setAmount(e.target.value)}
+      onAmountChange={handleAmountChange}
       onAdd={handleAdd}
     />
   );

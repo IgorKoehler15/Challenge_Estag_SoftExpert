@@ -12,7 +12,7 @@ class HistoryController
     }
 
     // GET — Lista pedidos ou retorna detalhes de um pedido específico
-    public function handle(): void
+    public function listOrders(): void
     {
         $code = isset($_GET['code']) ? (int) $_GET['code'] : null;
 

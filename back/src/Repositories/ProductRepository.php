@@ -125,10 +125,13 @@ class ProductRepository
         return $stmt->rowCount();
     }
 
-    // Decrementa o estoque de um produto
-    public function decrementStock(int $code, int $quantity): void
+    // Decrementa o estoque de um produto (protegido contra estoque negativo)
+    public function decrementStock(int $code, int $quantity): bool
     {
-        $stmt = $this->pdo->prepare("UPDATE products SET amount = amount - :qty WHERE code = :code");
+        $stmt = $this->pdo->prepare(
+            "UPDATE products SET amount = amount - :qty WHERE code = :code AND amount >= :qty"
+        );
         $stmt->execute([':qty' => $quantity, ':code' => $code]);
+        return $stmt->rowCount() > 0;
     }
 }

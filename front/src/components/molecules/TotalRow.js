@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import Label from '../atoms/Label';
 
 // Componente molecular que exibe uma linha de total (label + valor formatado)
@@ -10,3 +11,8 @@ export default function TotalRow({ label, value }) {
     </div>
   );
 }
+
+TotalRow.propTypes = {
+  label: PropTypes.string.isRequired,
+  value: PropTypes.string.isRequired,
+};

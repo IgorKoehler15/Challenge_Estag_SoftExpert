@@ -62,10 +62,16 @@ class CheckoutService
                     (float) $item['category']['tax']
                 );
 
-                $this->productRepo->decrementStock(
+                $decremented = $this->productRepo->decrementStock(
                     (int) $item['product']['code'],
                     (int) $item['amount']
                 );
+
+                if (!$decremented) {
+                    throw new InvalidArgumentException(
+                        "Insufficient stock for product code {$item['product']['code']}. Another purchase may have occurred simultaneously."
+                    );
+                }
             }
 
             $this->pdo->commit();

@@ -11,18 +11,18 @@ class ProductController
         $this->service = new ProductService($pdo);
     }
 
-    // Roteia a requisição para o método adequado
-    public function handle(string $method): void
+    // Roteia a requisição para o método adequado com base no HTTP method
+    public function handleRequest(string $httpMethod): void
     {
-        switch ($method) {
+        switch ($httpMethod) {
             case 'GET':
-                $this->index();
+                $this->listProducts();
                 break;
             case 'POST':
-                $this->store();
+                $this->createProduct();
                 break;
             case 'DELETE':
-                $this->destroy();
+                $this->deleteProduct();
                 break;
             default:
                 http_response_code(405);
@@ -31,7 +31,7 @@ class ProductController
     }
 
     // GET — Lista todos os produtos ativos
-    private function index(): void
+    private function listProducts(): void
     {
         try {
             $products = $this->service->listAll();
@@ -43,7 +43,7 @@ class ProductController
     }
 
     // POST — Cria um novo produto
-    private function store(): void
+    private function createProduct(): void
     {
         try {
             $data = json_decode(file_get_contents("php://input"), true);
@@ -62,7 +62,7 @@ class ProductController
     }
 
     // DELETE — Exclui um produto
-    private function destroy(): void
+    private function deleteProduct(): void
     {
         try {
             $code = isset($_GET['code']) ? (int) $_GET['code'] : 0;

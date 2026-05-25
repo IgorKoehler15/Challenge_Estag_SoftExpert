@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import Header from '../organisms/Header';
 
 // Template de layout em largura total (sem sidebar)
@@ -12,3 +13,7 @@ export default function FullWidthLayout({ children }) {
     </>
   );
 }
+
+FullWidthLayout.propTypes = {
+  children: PropTypes.node.isRequired,
+};

@@ -20,14 +20,14 @@ class CategoryService
     // Cria uma nova categoria após validar os dados
     public function create(array $data): int
     {
-        $name = isset($data['name']) ? trim($data['name']) : '';
-        $tax = isset($data['tax']) ? (float) $data['tax'] : -1;
+        $name = isset($data['name']) ? trim($data['name']) : null;
+        $tax = array_key_exists('tax', $data) ? (float) $data['tax'] : null;
 
-        if (empty($name)) {
+        if ($name === null || $name === '') {
             throw new InvalidArgumentException("The category name is required.");
         }
 
-        if ($tax < 0) {
+        if ($tax === null || $tax < 0) {
             throw new InvalidArgumentException("The tax must be zero or a positive number.");
         }
 

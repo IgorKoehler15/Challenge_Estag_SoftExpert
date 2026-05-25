@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import PropTypes from 'prop-types';
 import FormGroup from '../molecules/FormGroup';
 import InputRow from '../molecules/InputRow';
@@ -7,7 +8,7 @@ import Button from '../atoms/Button';
 
 // Formulário de cadastro de produtos
 // Recebe valores dos campos, opções de categoria e callbacks para controle de estado
-export default function ProductForm({
+const ProductForm = memo(function ProductForm({
   productName,
   amount,
   unitPrice,
@@ -74,7 +75,7 @@ export default function ProductForm({
       </Button>
     </aside>
   );
-}
+});
 
 ProductForm.propTypes = {
   productName: PropTypes.string.isRequired,
@@ -94,3 +95,5 @@ ProductForm.propTypes = {
   onAdd: PropTypes.func.isRequired,
   disabled: PropTypes.bool,
 };
+
+export default ProductForm;

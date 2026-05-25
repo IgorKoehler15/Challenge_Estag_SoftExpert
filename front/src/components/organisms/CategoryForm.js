@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import PropTypes from 'prop-types';
 import FormGroup from '../molecules/FormGroup';
 import InputRow from '../molecules/InputRow';
@@ -6,7 +7,7 @@ import Button from '../atoms/Button';
 
 // Formulário de cadastro de categorias
 // Recebe os valores dos campos e callbacks para atualizar estado e submeter
-export default function CategoryForm({
+const CategoryForm = memo(function CategoryForm({
   categoryName,
   tax,
   onNameChange,
@@ -45,7 +46,7 @@ export default function CategoryForm({
       </Button>
     </aside>
   );
-}
+});
 
 CategoryForm.propTypes = {
   categoryName: PropTypes.string.isRequired,
@@ -54,3 +55,5 @@ CategoryForm.propTypes = {
   onTaxChange: PropTypes.func.isRequired,
   onAdd: PropTypes.func.isRequired,
 };
+
+export default CategoryForm;

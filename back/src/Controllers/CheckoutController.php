@@ -12,7 +12,7 @@ class CheckoutController
     }
 
     // POST — Processa o checkout do carrinho
-    public function handle(): void
+    public function processCheckout(): void
     {
         try {
             $data = json_decode(file_get_contents("php://input"), true);
