@@ -33,12 +33,24 @@ class ProductService
             throw new InvalidArgumentException("Incomplete data.");
         }
 
+        if (mb_strlen($name) > 30) {
+            throw new InvalidArgumentException("Product name must be at most 30 characters.");
+        }
+
         if ($amount === null || $amount <= 0) {
             throw new InvalidArgumentException("The amount must be a positive integer.");
         }
 
+        if ($amount > 9999) {
+            throw new InvalidArgumentException("The amount must be at most 9999.");
+        }
+
         if ($price === null || $price <= 0) {
             throw new InvalidArgumentException("The price must be greater than zero.");
+        }
+
+        if ($price > 99999.99) {
+            throw new InvalidArgumentException("The price must be at most 99999.99.");
         }
 
         if ($categoryCode === null || $categoryCode <= 0) {

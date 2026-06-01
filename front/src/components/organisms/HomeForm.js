@@ -19,7 +19,7 @@ const HomeForm = memo(function HomeForm({
   onAdd,
 }) {
   return (
-    <aside className="aside-1">
+    <>
       {/* Dropdown para selecionar o produto */}
       <FormGroup>
         <Select
@@ -74,7 +74,7 @@ const HomeForm = memo(function HomeForm({
       <Button variant="addProduct" onClick={onAdd}>
         Add Product
       </Button>
-    </aside>
+    </>
   );
 });
 

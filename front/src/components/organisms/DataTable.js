@@ -1,16 +1,26 @@
 import { memo } from 'react';
 import PropTypes from 'prop-types';
+import styles from './DataTable.module.css';
+
+// Mapeamento de nomes de variante para classes do CSS Module
+const variantMap = {
+  tabelaProdutos: styles.tabelaProdutos,
+  'table-products': styles.tableProducts,
+  'table-categories': styles.tableCategories,
+  'table-history': styles.tableHistory,
+  'table-purchase': styles.tablePurchase,
+};
 
 // Tabela de dados genérica e reutilizável
 // Recebe colunas (columns), linhas (rows) e exibe uma linha vazia se não houver dados
 function DataTable({ className, columns, rows, fillerCols }) {
-  
+
   // Define quantas colunas a linha de preenchimento deve ter
   const colCount = fillerCols || columns.length;
   const isEmpty = !rows || rows.length === 0;
 
-  // Combina a classe base com classes adicionais
-  const tableClasses = ['data-table', className].filter(Boolean).join(' ');
+  // Combina a classe base com classes adicionais via CSS Module
+  const tableClasses = [styles.dataTable, variantMap[className]].filter(Boolean).join(' ');
 
   return (
     <table className={tableClasses}>
@@ -26,7 +36,7 @@ function DataTable({ className, columns, rows, fillerCols }) {
       <tbody>
         {isEmpty ? (
           // Linha de preenchimento quando não há dados para exibir
-          <tr className="filler-row">
+          <tr className={styles.fillerRow}>
             {Array.from({ length: colCount }).map((_, i) => (
               <td key={i}></td>
             ))}

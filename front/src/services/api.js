@@ -96,11 +96,11 @@ export async function checkout(items) {
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ items }),
   });
+  const data = await parseJSON(response);
   if (!response.ok) {
-    const data = await parseJSON(response);
     throw new Error(data.error || 'Error processing purchase on the server.');
   }
-  return response;
+  return data;
 }
 
 // ==================== HISTÓRICO ====================

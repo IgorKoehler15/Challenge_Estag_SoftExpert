@@ -1,0 +1,11 @@
+.summaryCard {
+    display: flex;
+    gap: 3rem;
+    background-color: #f8f8f8;
+    padding: 1.5rem 2rem;
+    border-radius: 8px;
+    border: 1px solid #eee;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+    white-space: nowrap;
+}

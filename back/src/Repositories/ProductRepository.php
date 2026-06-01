@@ -25,7 +25,7 @@ class ProductRepository
     public function findActiveByCode(int $code): ?array
     {
         $stmt = $this->pdo->prepare(
-            "SELECT code, amount FROM products WHERE code = :code AND is_active = true"
+            "SELECT code, amount, price, category_code FROM products WHERE code = :code AND is_active = true"
         );
         $stmt->execute([':code' => $code]);
         $result = $stmt->fetch(PDO::FETCH_ASSOC);

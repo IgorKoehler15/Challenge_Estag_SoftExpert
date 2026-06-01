@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 
 import { Link } from 'react-router-dom';
 import FullWidthLayout from '../templates/FullWidthLayout';
@@ -15,20 +15,20 @@ export default function HistoryPage() {
   const [error, setError] = useState(null);
 
   // Carrega o histórico de pedidos da API ao montar o componente
-  const loadHistory = async () => {
+  const loadHistory = useCallback(async () => {
     setError(null);
     try {
       const data = await api.fetchHistory();
       setHistory(data);
     } catch (err) {
-      logger.error('Erro ao buscar histórico:', err);
+      logger.error('Error fetching history:', err);
       setError('Failed to load purchase history. Please try again.');
     }
-  };
+  }, []);
 
   useEffect(() => {
     loadHistory();
-  }, []);
+  }, [loadHistory]);
 
   // Monta as linhas da tabela com código, imposto, total e botão de visualização
   const rows = history.map((purchase) => {

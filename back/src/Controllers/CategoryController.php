@@ -47,7 +47,14 @@ class CategoryController
     {
         try {
             $data = json_decode(file_get_contents("php://input"), true);
-            $code = $this->service->create($data ?? []);
+
+            if ($data === null) {
+                http_response_code(400);
+                echo json_encode(["error" => "Invalid request body."]);
+                return;
+            }
+
+            $code = $this->service->create($data);
 
             http_response_code(201);
             echo json_encode(["message" => "Category created successfully!", "code" => $code]);

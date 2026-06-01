@@ -1,0 +1,13 @@
+.actionButtons {
+    display: flex;
+    justify-content: flex-end;
+    gap: 15px;
+}
+
+@media (max-width: 600px) {
+    .actionButtons {
+        order: 2;
+        align-self: flex-end !important;
+        justify-content: flex-end;
+    }
+}

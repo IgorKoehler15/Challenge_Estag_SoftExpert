@@ -133,7 +133,7 @@ export default function ProductsPage() {
   };
 
   // Monta as linhas da tabela com dados dos produtos e nome da categoria
-  const rows = products.map((p, index) => {
+  const rows = products.map((p) => {
     const catObj = categoriesList.find(
       (c) => parseInt(c.code) === parseInt(p.category_code)
     );

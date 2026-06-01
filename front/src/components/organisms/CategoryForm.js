@@ -15,7 +15,7 @@ const CategoryForm = memo(function CategoryForm({
   onAdd,
 }) {
   return (
-    <aside className="aside-1">
+    <>
       {/* Linha com campo de nome da categoria e campo de imposto */}
       <InputRow>
         <FormGroup style={{ flex: 2 }}>
@@ -44,7 +44,7 @@ const CategoryForm = memo(function CategoryForm({
       <Button variant="addCategory" onClick={onAdd}>
         Add Category
       </Button>
-    </aside>
+    </>
   );
 });
 

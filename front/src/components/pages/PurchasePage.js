@@ -8,6 +8,8 @@ import TotalsSection from '../organisms/TotalsSection';
 import Button from '../atoms/Button';
 import * as api from '../../services/api';
 import logger from '../../utils/logger';
+import styles from './PurchasePage.module.css';
+import summaryStyles from '../molecules/SummaryItem.module.css';
 
 // Página de detalhes de uma compra específica (acessada via histórico)
 export default function PurchasePage() {
@@ -22,7 +24,7 @@ export default function PurchasePage() {
     if (!code) {
       alert('Purchase not found!');
       navigate('/history');
-      return; 
+      return;
     }
 
     const load = async () => {
@@ -46,7 +48,7 @@ export default function PurchasePage() {
   const summaryItems = [
     { label: 'Code:', value: transactionCode },
     { label: 'Date:', value: '', hidden: true },
-    { label: 'Status:', value: 'Finished', valueClassName: 'status-finished' },
+    { label: 'Status:', value: 'Finished', valueClassName: summaryStyles.statusFinished },
   ];
 
   // Monta as linhas da tabela com cálculo de imposto e total por item
@@ -59,7 +61,7 @@ export default function PurchasePage() {
     const finalItemTotal = productBaseTotal + taxValue;
 
     return {
-      key: i, 
+      key: i,
       cells: [
         <>
           <strong>{item.product_name}</strong>
@@ -87,7 +89,7 @@ export default function PurchasePage() {
       />
 
       {/* Rodapé com botão de voltar e seção de totais */}
-      <div className="details-footer">
+      <div className={styles.detailsFooter}>
         <Link to="/history">
           <Button variant="btn-cancel">Back to History</Button>
         </Link>

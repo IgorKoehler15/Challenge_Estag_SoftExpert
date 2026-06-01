@@ -1,0 +1,17 @@
+.totalRow {
+    display: flex;
+    width: 150px;
+    justify-content: space-between;
+    font-size: 0.9rem;
+}
+
+.totalRow label {
+    font-weight: bold;
+}
+
+@media (max-width: 600px) {
+    .totalRow {
+        justify-content: space-between;
+        width: 150px;
+    }
+}

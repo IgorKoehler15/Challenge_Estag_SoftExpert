@@ -8,7 +8,9 @@ import TotalsSection from '../organisms/TotalsSection';
 import Button from '../atoms/Button';
 import ErrorMessage from '../atoms/ErrorMessage';
 import * as api from '../../services/api';
+import { validateAmount } from '../../utils/validation';
 import logger from '../../utils/logger';
+import styles from './HomePage.module.css';
 
 // Chave usada para persistir o carrinho no localStorage
 const CART_KEY = 'suite_cart';
@@ -65,7 +67,7 @@ export default function HomePage() {
       setCart(valid);
       setCartLoaded(true);
     } catch (err) {
-      logger.error('Erro ao buscar dados do banco:', err);
+      logger.error('Error fetching data:', err);
       setError('Failed to load products. Please try again.');
     }
   }, []);
@@ -124,10 +126,10 @@ export default function HomePage() {
     const product = productsDb.find((p) => parseInt(p.code) === selectedCode);
     if (!product) return alert('Product not found in database.');
 
-    if (!/^\d+$/.test(rawAmount) || parseInt(rawAmount) <= 0)
-      return alert('Invalid amount.');
+    const amountError = validateAmount(rawAmount);
+    if (amountError) return alert(amountError);
 
-    const qty = parseInt(rawAmount);
+    const qty = parseInt(rawAmount, 10);
     const existing = cart.find(
       (item) => parseInt(item.product.code) === parseInt(product.code)
     );
@@ -188,55 +190,58 @@ export default function HomePage() {
   };
 
   // Remove um produto do carrinho
-  const handleDelete = (productCode) => {
+  const handleDelete = useCallback((productCode) => {
     if (window.confirm('Do you really want to remove this product from the cart?')) {
-      setCart(cart.filter((item) => parseInt(item.product.code) !== parseInt(productCode)));
+      setCart((prev) => prev.filter((item) => parseInt(item.product.code) !== parseInt(productCode)));
     }
-  };
+  }, []);
 
-  // Calcula totais de imposto e valor geral para exibição
-  let totalTax = 0;
-  let grandTotal = 0;
+  // Calcula linhas da tabela e totais de forma memoizada
+  const { rows, totalTax, grandTotal } = useMemo(() => {
+    let tax = 0;
+    let total = 0;
 
-  // Monta as linhas da tabela do carrinho com cálculos de imposto por item
-  const rows = cart.map((item) => {
-    const itemPrice = parseFloat(item.product.price) || 0;
+    const tableRows = cart.map((item) => {
+      const itemPrice = parseFloat(item.product.price) || 0;
 
-    const categoryObj =
-      categoriesDb.find(
-        (c) => parseInt(c.code) === parseInt(item.product.category_code)
-      ) || item.category; 
+      const categoryObj =
+        categoriesDb.find(
+          (c) => parseInt(c.code) === parseInt(item.product.category_code)
+        ) || item.category;
 
-    const taxRate =
-      categoryObj && !isNaN(parseFloat(categoryObj.tax))
-        ? parseFloat(categoryObj.tax)
-        : 0;
+      const taxRate =
+        categoryObj && !isNaN(parseFloat(categoryObj.tax))
+          ? parseFloat(categoryObj.tax)
+          : 0;
 
-    const productTotal = itemPrice * item.amount;
-    const taxValue = (productTotal * taxRate) / 100;
-    const finalRowTotal = productTotal + taxValue;
+      const productTotal = itemPrice * item.amount;
+      const taxValue = (productTotal * taxRate) / 100;
+      const finalRowTotal = productTotal + taxValue;
 
-    totalTax += taxValue;
-    grandTotal += finalRowTotal;
+      tax += taxValue;
+      total += finalRowTotal;
 
-    return {
-      key: item.product.code,
-      cells: [
-        item.product.name,
-        itemPrice.toFixed(2),
-        item.amount,
-        taxValue.toFixed(2),
-        finalRowTotal.toFixed(2),
-        <Button
-          variant="btn-cancel"
-          style={{ padding: '5px 10px', fontSize: '12px' }}
-          onClick={() => handleDelete(item.product.code)}
-        >
-          Delete
-        </Button>,
-      ],
-    };
-  });
+      return {
+        key: item.product.code,
+        cells: [
+          item.product.name,
+          itemPrice.toFixed(2),
+          item.amount,
+          taxValue.toFixed(2),
+          finalRowTotal.toFixed(2),
+          <Button
+            variant="btn-cancel"
+            style={{ padding: '5px 10px', fontSize: '12px' }}
+            onClick={() => handleDelete(item.product.code)}
+          >
+            Delete
+          </Button>,
+        ],
+      };
+    });
+
+    return { rows: tableRows, totalTax: tax, grandTotal: total };
+  }, [cart, categoriesDb, handleDelete]);
 
   // Sidebar: formulário para adicionar produtos ao carrinho
   const sidebar = (
@@ -270,7 +275,7 @@ export default function HomePage() {
             { label: 'Total:', value: cart.length === 0 ? '$0.00' : grandTotal.toFixed(2) },
           ]}
         />
-        <div className="action-buttons">
+        <div className={styles.actionButtons}>
           <Button variant="btn-cancel" onClick={handleCancel}>Cancel</Button>
           <Button variant="btn-finish" onClick={handleFinish}>Finish</Button>
         </div>

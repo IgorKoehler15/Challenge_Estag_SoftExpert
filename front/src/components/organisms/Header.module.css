@@ -1,0 +1,46 @@
+.mainNav {
+    width: 100%;
+    padding: 0.8rem 2rem;
+    background-color: #6A65FF;
+    margin-bottom: 2rem;
+    display: flex;
+    align-items: center;
+}
+
+.navGroup {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+    flex-wrap: wrap;
+}
+
+.logo a {
+    font-size: 1.4rem;
+    font-weight: bold;
+    color: #000;
+    transition: 0.3s;
+    text-decoration: none;
+}
+
+.logo a:hover {
+    color: white;
+}
+
+.navLinks {
+    list-style: none;
+    display: flex;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+}
+
+.navLinks li a {
+    font-size: 0.9rem;
+    font-weight: bold;
+    text-decoration: none;
+    color: #1a1a1a;
+    transition: 0.3s;
+}
+
+.navLinks li a:hover {
+    color: white;
+}

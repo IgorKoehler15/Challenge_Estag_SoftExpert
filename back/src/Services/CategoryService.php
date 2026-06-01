@@ -27,8 +27,16 @@ class CategoryService
             throw new InvalidArgumentException("The category name is required.");
         }
 
+        if (mb_strlen($name) > 30) {
+            throw new InvalidArgumentException("Category name must be at most 30 characters.");
+        }
+
         if ($tax === null || $tax < 0) {
             throw new InvalidArgumentException("The tax must be zero or a positive number.");
+        }
+
+        if ($tax > 100) {
+            throw new InvalidArgumentException("The tax must be at most 100.");
         }
 
         // Verifica duplicidade de nome

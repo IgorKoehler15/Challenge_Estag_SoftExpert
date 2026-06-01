@@ -28,6 +28,17 @@ class CategoryRepository
         return (bool) $stmt->fetch();
     }
 
+    // Busca a taxa de uma categoria ativa pelo código
+    public function findTaxByCode(int $code): ?float
+    {
+        $stmt = $this->pdo->prepare(
+            "SELECT tax FROM categories WHERE code = :code AND is_active = true"
+        );
+        $stmt->execute([':code' => $code]);
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $result ? (float) $result['tax'] : null;
+    }
+
     // Verifica se já existe uma categoria ativa com o mesmo nome
     public function existsActiveByName(string $name): bool
     {

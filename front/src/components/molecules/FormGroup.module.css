@@ -1,0 +1,29 @@
+.formGroup {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    margin-bottom: 10px;
+    font-weight: bold;
+    font-size: 0.9rem;
+}
+
+.formGroup input,
+.formGroup select {
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background-color: #f8f8f8;
+    font-size: 0.9rem;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.inputRow {
+    display: flex;
+    gap: 10px;
+    flex-wrap: nowrap;
+}
+
+.inputRow .formGroup {
+    flex: 1 1 150px;
+}

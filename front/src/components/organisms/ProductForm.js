@@ -22,7 +22,7 @@ const ProductForm = memo(function ProductForm({
   disabled,
 }) {
   return (
-    <aside className="aside-1">
+    <>
       {/* Campo de nome do produto */}
       <FormGroup>
         <Input
@@ -73,7 +73,7 @@ const ProductForm = memo(function ProductForm({
       <Button variant="addProduct" onClick={onAdd} disabled={disabled}>
         Add Product
       </Button>
-    </aside>
+    </>
   );
 });
 

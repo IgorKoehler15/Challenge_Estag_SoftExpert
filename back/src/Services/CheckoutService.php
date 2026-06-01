@@ -2,18 +2,21 @@
 
 require_once __DIR__ . '/../Repositories/OrderRepository.php';
 require_once __DIR__ . '/../Repositories/ProductRepository.php';
+require_once __DIR__ . '/../Repositories/CategoryRepository.php';
 
 class CheckoutService
 {
     private PDO $pdo;
     private OrderRepository $orderRepo;
     private ProductRepository $productRepo;
+    private CategoryRepository $categoryRepo;
 
     public function __construct(PDO $pdo)
     {
         $this->pdo = $pdo;
         $this->orderRepo = new OrderRepository($pdo);
         $this->productRepo = new ProductRepository($pdo);
+        $this->categoryRepo = new CategoryRepository($pdo);
     }
 
     // Processa o checkout do carrinho e retorna o código do pedido criado
@@ -26,20 +29,16 @@ class CheckoutService
         $this->pdo->beginTransaction();
 
         try {
-            // Valida estoque de todos os itens antes de prosseguir
-            $this->validateStock($items);
+            // Valida estoque e resolve dados reais do banco para cada item
+            $resolvedItems = $this->validateAndResolve($items);
 
-            // Calcula totais
+            // Calcula totais com base nos dados do banco
             $totalTax = 0;
             $grandTotal = 0;
 
-            foreach ($items as $item) {
-                $price = (float) $item['product']['price'];
-                $tax = (float) $item['category']['tax'];
-                $amount = (int) $item['amount'];
-
-                $productTotal = $price * $amount;
-                $taxValue = ($productTotal * $tax) / 100;
+            foreach ($resolvedItems as $item) {
+                $productTotal = $item['price'] * $item['amount'];
+                $taxValue = ($productTotal * $item['tax']) / 100;
 
                 $totalTax += $taxValue;
                 $grandTotal += ($productTotal + $taxValue);
@@ -50,26 +49,26 @@ class CheckoutService
             $this->orderRepo->createOrder($nextOrderCode, $grandTotal, $totalTax);
 
             // Insere itens e atualiza estoque
-            foreach ($items as $item) {
+            foreach ($resolvedItems as $item) {
                 $nextItemCode = $this->orderRepo->getNextItemCode();
 
                 $this->orderRepo->createOrderItem(
                     $nextItemCode,
                     $nextOrderCode,
-                    (int) $item['product']['code'],
-                    (int) $item['amount'],
-                    (float) $item['product']['price'],
-                    (float) $item['category']['tax']
+                    $item['product_code'],
+                    $item['amount'],
+                    $item['price'],
+                    $item['tax']
                 );
 
                 $decremented = $this->productRepo->decrementStock(
-                    (int) $item['product']['code'],
-                    (int) $item['amount']
+                    $item['product_code'],
+                    $item['amount']
                 );
 
                 if (!$decremented) {
                     throw new InvalidArgumentException(
-                        "Insufficient stock for product code {$item['product']['code']}. Another purchase may have occurred simultaneously."
+                        "Insufficient stock for product code {$item['product_code']}. Another purchase may have occurred simultaneously."
                     );
                 }
             }
@@ -85,12 +84,14 @@ class CheckoutService
         }
     }
 
-    // Valida se o estoque é suficiente para todos os itens
-    private function validateStock(array $items): void
+    // Valida estoque e resolve preço/taxa a partir do banco (ignora valores do cliente)
+    private function validateAndResolve(array $items): array
     {
+        $resolved = [];
+
         foreach ($items as $item) {
-            $productCode = (int) $item['product']['code'];
-            $requestedAmount = (int) $item['amount'];
+            $productCode = (int) ($item['product']['code'] ?? 0);
+            $requestedAmount = (int) ($item['amount'] ?? 0);
 
             if ($requestedAmount <= 0) {
                 throw new InvalidArgumentException("Invalid quantity for product code {$productCode}.");
@@ -107,6 +108,21 @@ class CheckoutService
                     "Insufficient stock for product code {$productCode}. Available: {$product['amount']}, requested: {$requestedAmount}."
                 );
             }
+
+            // Busca a taxa da categoria diretamente do banco
+            $tax = $this->categoryRepo->findTaxByCode((int) $product['category_code']);
+            if ($tax === null) {
+                throw new InvalidArgumentException("Category for product code {$productCode} not found or inactive.");
+            }
+
+            $resolved[] = [
+                'product_code' => $productCode,
+                'amount'       => $requestedAmount,
+                'price'        => (float) $product['price'],
+                'tax'          => $tax,
+            ];
         }
+
+        return $resolved;
     }
 }

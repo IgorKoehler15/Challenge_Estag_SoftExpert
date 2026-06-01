@@ -81,7 +81,7 @@ export default function CategoriesPage() {
   };
 
   // Monta as linhas da tabela a partir dos dados das categorias
-  const rows = categories.map((c, index) => {
+  const rows = categories.map((c) => {
     const displayCode = String(c.display_code).padStart(3, '0');
     return {
       key: c.code,

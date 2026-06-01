@@ -1,0 +1,18 @@
+.summaryItem {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    font-size: 0.95rem;
+}
+
+.summaryItem label {
+    font-weight: bold;
+    color: #666;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+}
+
+.statusFinished {
+    color: #27ae60;
+    font-weight: bold;
+}
