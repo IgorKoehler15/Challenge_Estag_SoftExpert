@@ -3,11 +3,11 @@ import styles from './Button.module.css';
 
 // Mapeamento de variantes para classes do CSS Module
 const variantMap = {
-  addProduct: styles.addProduct,
-  addCategory: styles.addCategory,
+  addProduct: styles.btnPrimary,
+  addCategory: styles.btnPrimary,
   'btn-cancel': styles.btnCancel,
-  'btn-view': styles.btnView,
-  'btn-finish': styles.btnFinish,
+  'btn-view': styles.btnPrimary,
+  'btn-finish': styles.btnPrimary,
 };
 
 // Componente atômico de botão reutilizável

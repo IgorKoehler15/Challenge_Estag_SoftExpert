@@ -4,7 +4,7 @@
     border-radius: 4px;
     font-weight: bold;
     cursor: pointer;
-    transition: 0.5s;
+    transition: 0.3s;
 }
 
 .btn:hover {
@@ -12,32 +12,13 @@
     color: white;
 }
 
-.addProduct, .addCategory {
+.btnPrimary {
     background-color: #6A65FF;
     color: white;
-    font-weight: bold;
-    border: none;
     padding: 10px;
-    cursor: pointer;
-    border-radius: 4px;
-    transition: 0.3s;
-}
-
-.addProduct:hover, .addCategory:hover {
-    background-color: #5550cc;
 }
 
 .btnCancel {
     background-color: #C5C5C5;
     color: #333;
-}
-
-.btnView {
-    background-color: #6A65FF;
-    color: white;
-}
-
-.btnFinish {
-    background-color: #6A65FF;
-    color: white;
 }

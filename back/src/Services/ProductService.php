@@ -2,6 +2,7 @@
 
 require_once __DIR__ . '/../Repositories/ProductRepository.php';
 require_once __DIR__ . '/../Repositories/CategoryRepository.php';
+require_once __DIR__ . '/../Utils/Validator.php';
 
 class ProductService
 {
@@ -23,39 +24,10 @@ class ProductService
     // Cria um novo produto após validar todos os campos
     public function create(array $data): void
     {
-        $name = isset($data['name']) ? trim($data['name']) : null;
-        $amount = isset($data['amount']) ? (int) $data['amount'] : null;
-        $price = isset($data['price']) ? (float) $data['price'] : null;
-        $categoryCode = isset($data['category_code']) ? (int) $data['category_code'] : null;
-
-        // Validação de campos obrigatórios
-        if ($name === null || $name === '') {
-            throw new InvalidArgumentException("Incomplete data.");
-        }
-
-        if (mb_strlen($name) > 30) {
-            throw new InvalidArgumentException("Product name must be at most 30 characters.");
-        }
-
-        if ($amount === null || $amount <= 0) {
-            throw new InvalidArgumentException("The amount must be a positive integer.");
-        }
-
-        if ($amount > 9999) {
-            throw new InvalidArgumentException("The amount must be at most 9999.");
-        }
-
-        if ($price === null || $price <= 0) {
-            throw new InvalidArgumentException("The price must be greater than zero.");
-        }
-
-        if ($price > 99999.99) {
-            throw new InvalidArgumentException("The price must be at most 99999.99.");
-        }
-
-        if ($categoryCode === null || $categoryCode <= 0) {
-            throw new InvalidArgumentException("A valid category code is required.");
-        }
+        $name = Validator::requiredString($data, 'name', 'Product name');
+        $amount = Validator::requiredPositiveInt($data, 'amount', 'Amount');
+        $price = Validator::requiredPositiveFloat($data, 'price', 'Price');
+        $categoryCode = Validator::requiredPositiveInt($data, 'category_code', 'Category code', 999999);
 
         // Verifica se a categoria existe e está ativa
         if (!$this->categoryRepo->existsActiveByCode($categoryCode)) {
