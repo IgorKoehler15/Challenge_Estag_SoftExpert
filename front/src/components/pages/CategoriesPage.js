@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import SidebarLayout from '../templates/SidebarLayout';
 import CategoryForm from '../organisms/CategoryForm';
 import DataTable from '../organisms/DataTable';
@@ -62,26 +62,26 @@ export default function CategoriesPage() {
       setCategoryName('');
       setTax('');
       await loadCategories();
-    } catch (error) {
-      alert(error.message || 'Error connecting to the server while trying to save.');
+    } catch (err) {
+      alert(err.message || 'Error connecting to the server while trying to save.');
     }
   };
 
   // Confirma e executa a exclusão de uma categoria
-  const handleDelete = async (code, name) => {
+  const handleDelete = useCallback(async (code, name) => {
     if (window.confirm(`Delete the category "${name}"?`)) {
       try {
         const data = await api.deleteCategory(code);
         alert(data.message || 'Category successfully deleted!');
         await loadCategories();
-      } catch (error) {
-        alert(error.message || 'Error connecting to the server while trying to delete.');
+      } catch (err) {
+        alert(err.message || 'Error connecting to the server while trying to delete.');
       }
     }
-  };
+  }, [loadCategories]);
 
   // Monta as linhas da tabela a partir dos dados das categorias
-  const rows = categories.map((c) => {
+  const rows = useMemo(() => categories.map((c) => {
     const displayCode = String(c.display_code).padStart(3, '0');
     return {
       key: c.code,
@@ -94,7 +94,9 @@ export default function CategoriesPage() {
         </Button>,
       ],
     };
-  });
+  }),
+  [categories, handleDelete]
+);
 
   // Sidebar: formulário de cadastro de categoria
   const sidebar = (

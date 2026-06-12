@@ -34,7 +34,7 @@ class CheckoutController
             echo json_encode(["error" => $e->getMessage()]);
         } catch (Exception $e) {
             http_response_code(500);
-            echo json_encode(["error" => "Error processing checkout: " . $e->getMessage()]);
+            echo json_encode(["error" => "An internal error occurred while processing the checkout."]);
         }
     }
 }

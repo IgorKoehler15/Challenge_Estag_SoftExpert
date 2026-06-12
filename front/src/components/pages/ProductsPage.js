@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import SidebarLayout from '../templates/SidebarLayout';
 import ProductForm from '../organisms/ProductForm';
 import DataTable from '../organisms/DataTable';
@@ -46,10 +46,14 @@ export default function ProductsPage() {
   }, [loadData]);
 
   // Monta as opções do select de categorias para o formulário
-  const categoryOptions = categoriesList.map((c) => ({
-    value: String(c.code),
-    label: c.name.charAt(0).toUpperCase() + c.name.slice(1),
-  }));
+  const categoryOptions = useMemo(() =>
+    categoriesList.map((c) => ({
+      value: String(c.code),
+      label: c.name.charAt(0).toUpperCase() + c.name.slice(1),
+    })),
+    [categoriesList]
+  );
+
 
   // Valida os campos e envia o novo produto para a API
   const handleAdd = async () => {
@@ -95,22 +99,28 @@ export default function ProductsPage() {
       setUnitPrice('');
       setSelectedCategory('');
       await loadData(); 
-    } catch (error) {
-      alert(error.message || 'Error saving product to server.');
+    } catch (err) {
+      alert(err.message || 'Error saving product to server.');
     } finally {
       setAddDisabled(false); 
     }
   };
 
   // Verifica se o produto está no carrinho e executa a exclusão
-  const handleDelete = async (code) => {
+  const handleDelete = useCallback(async (code) => {
     const productToDelete = products.find((p) => parseInt(p.code) === parseInt(code));
     if (!productToDelete) return;
 
     // Impede exclusão se o produto está no carrinho da HomePage
     const cartData = localStorage.getItem('suite_cart');
     if (cartData) {
-      const cart = JSON.parse(cartData);
+      let cart;
+      try {
+        cart = JSON.parse(cartData);
+      } catch {
+        cart = [];
+      }
+
       const isInCart = cart.some(
         (item) => parseInt(item.product.code) === parseInt(code)
       );
@@ -125,15 +135,15 @@ export default function ProductsPage() {
       try {
         const data = await api.deleteProduct(code);
         alert(data.message || 'Product successfully deleted!');
-        await loadData(); 
-      } catch (error) {
-        alert(error.message || 'Error connecting to the server while trying to delete.');
+        await loadData();
+      } catch (err) {
+        alert(err.message || 'Error connecting to the server while trying to delete.');
       }
     }
-  };
+  }, [products, loadData]);
 
   // Monta as linhas da tabela com dados dos produtos e nome da categoria
-  const rows = products.map((p) => {
+  const rows = useMemo(() => products.map((p) => {
     const catObj = categoriesList.find(
       (c) => parseInt(c.code) === parseInt(p.category_code)
     );
@@ -154,7 +164,9 @@ export default function ProductsPage() {
         </Button>,
       ],
     };
-  });
+  }),
+  [products, categoriesList, handleDelete]
+  );
 
   // Sidebar: formulário de cadastro de produto
   const sidebar = (

@@ -18,7 +18,7 @@ TotalsSection.propTypes = {
   rows: PropTypes.arrayOf(
     PropTypes.shape({
       label: PropTypes.string.isRequired,
-      value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+      value: PropTypes.string.isRequired,
     })
   ).isRequired,
 };

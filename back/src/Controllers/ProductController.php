@@ -38,7 +38,7 @@ class ProductController
             echo json_encode($products);
         } catch (PDOException $e) {
             http_response_code(500);
-            echo json_encode(["error" => "Error searching for products: " . $e->getMessage()]);
+            echo json_encode(["error" => "An internal database error occurred."]);
         }
     }
 
@@ -63,8 +63,8 @@ class ProductController
             http_response_code(400);
             echo json_encode(["error" => $e->getMessage()]);
         } catch (PDOException $e) {
-            http_response_code(400);
-            echo json_encode(["error" => "Error creating product: " . $e->getMessage()]);
+            http_response_code(500);
+            echo json_encode(["error" => "An internal database error occurred."]);
         }
     }
 
@@ -86,7 +86,7 @@ class ProductController
             echo json_encode(["error" => $e->getMessage()]);
         } catch (PDOException $e) {
             http_response_code(500);
-            echo json_encode(["error" => "Error deleting product: " . $e->getMessage()]);
+            echo json_encode(["error" => "An internal database error occurred."]);
         }
     }
 }

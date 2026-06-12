@@ -22,7 +22,7 @@ class CategoryService
     public function create(array $data): int
     {
         $name = Validator::requiredString($data, 'name', 'Category name');
-        $tax = Validator::requiredNonNegativeFloat($data, 'tax', 'Tax');
+        $tax = Validator::requiredNonNegativeFloat($data, 'tax', 'Tax', Validator::MAX_TAX);
 
         // Verifica duplicidade de nome
         if ($this->categoryRepo->existsActiveByName($name)) {

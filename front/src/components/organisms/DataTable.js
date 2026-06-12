@@ -4,7 +4,7 @@ import styles from './DataTable.module.css';
 
 // Mapeamento de nomes de variante para classes do CSS Module
 const variantMap = {
-  tabelaProdutos: styles.tabelaProdutos,
+  tableCart: styles.tableCart,
   'table-products': styles.tableProducts,
   'table-categories': styles.tableCategories,
   'table-history': styles.tableHistory,

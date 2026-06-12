@@ -8,10 +8,3 @@
 .totalRow label {
     font-weight: bold;
 }
-
-@media (max-width: 600px) {
-    .totalRow {
-        justify-content: space-between;
-        width: 150px;
-    }
-}

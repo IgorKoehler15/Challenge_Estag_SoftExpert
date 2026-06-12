@@ -31,8 +31,8 @@ export default function PurchasePage() {
       try {
         const data = await api.fetchPurchase(code);
         setPurchase(data);
-      } catch (error) {
-        logger.error('Error when searching:', error);
+      } catch (err) {
+        logger.error('Error when searching:', err);
         alert('Error retrieving order details.');
         navigate('/history');
       }

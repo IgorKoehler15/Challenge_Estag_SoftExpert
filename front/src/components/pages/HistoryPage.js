@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 
 import { Link } from 'react-router-dom';
 import FullWidthLayout from '../templates/FullWidthLayout';
@@ -31,7 +31,7 @@ export default function HistoryPage() {
   }, [loadHistory]);
 
   // Monta as linhas da tabela com código, imposto, total e botão de visualização
-  const rows = history.map((purchase) => {
+  const rows = useMemo(() => history.map((purchase) => {
     const transactionCode = String(purchase.code).padStart(3, '0');
     return {
       key: purchase.code,
@@ -45,7 +45,9 @@ export default function HistoryPage() {
         </Link>,
       ],
     };
-  });
+  }),
+  [history]
+  );
 
   return (
     <FullWidthLayout>

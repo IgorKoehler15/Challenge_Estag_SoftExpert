@@ -2,9 +2,16 @@
 
 // Classe utilitária de validação — centraliza regras reutilizáveis entre services
 class Validator
-{
+{   
+    // Métodos usam as constantes em vez dos valores literais
+    const MAX_NAME_LENGTH = 30;
+    const MAX_AMOUNT = 9999;
+    const MAX_PRICE = 99999.99;
+    const MAX_TAX = 100;
+    const MAX_CODE = 999999;
+
     // Extrai e valida um campo string obrigatório (nome)
-    public static function requiredString(array $data, string $field, string $label, int $maxLength = 30): string
+    public static function requiredString(array $data, string $field, string $label, int $maxLength = self::MAX_NAME_LENGTH): string
     {
         $value = isset($data[$field]) ? trim($data[$field]) : null;
 
@@ -20,11 +27,15 @@ class Validator
     }
 
     // Extrai e valida um campo inteiro positivo obrigatório
-    public static function requiredPositiveInt(array $data, string $field, string $label, int $max = 9999): int
+    public static function requiredPositiveInt(array $data, string $field, string $label, int $max = self::MAX_AMOUNT): int
     {
-        $value = isset($data[$field]) ? (int) $data[$field] : null;
+        if (!isset($data[$field])) {
+            throw new InvalidArgumentException("{$label} is required.");
+        }
 
-        if ($value === null || $value <= 0) {
+        $value = (int) $data[$field];
+
+        if ($value <= 0) {
             throw new InvalidArgumentException("{$label} must be a positive integer.");
         }
 
@@ -36,11 +47,15 @@ class Validator
     }
 
     // Extrai e valida um campo float positivo obrigatório (preço)
-    public static function requiredPositiveFloat(array $data, string $field, string $label, float $max = 99999.99): float
+    public static function requiredPositiveFloat(array $data, string $field, string $label, float $max = self::MAX_PRICE): float
     {
-        $value = isset($data[$field]) ? (float) $data[$field] : null;
+        if (!isset($data[$field])) {
+            throw new InvalidArgumentException("{$label} is required.");
+        }
 
-        if ($value === null || $value <= 0) {
+        $value = (float) $data[$field];
+
+        if ($value <= 0) {
             throw new InvalidArgumentException("{$label} must be greater than zero.");
         }
 
@@ -52,11 +67,15 @@ class Validator
     }
 
     // Extrai e valida um campo float que aceita zero (taxa/imposto)
-    public static function requiredNonNegativeFloat(array $data, string $field, string $label, float $max = 100): float
+    public static function requiredNonNegativeFloat(array $data, string $field, string $label, float $max = self::MAX_TAX): float
     {
-        $value = array_key_exists($field, $data) ? (float) $data[$field] : null;
+        if (!array_key_exists($field, $data)) {
+            throw new InvalidArgumentException("{$label} is required.");
+        }
 
-        if ($value === null || $value < 0) {
+        $value = (float) $data[$field];
+
+        if ($value < 0) {
             throw new InvalidArgumentException("{$label} must be zero or a positive number.");
         }
 

@@ -38,7 +38,7 @@ class CategoryController
             echo json_encode($categories);
         } catch (PDOException $e) {
             http_response_code(500);
-            echo json_encode(["error" => "Error searching for categories: " . $e->getMessage()]);
+            echo json_encode(["error" => "An internal database error occurred."]);
         }
     }
 
@@ -63,8 +63,8 @@ class CategoryController
             http_response_code(400);
             echo json_encode(["error" => $e->getMessage()]);
         } catch (PDOException $e) {
-            http_response_code(400);
-            echo json_encode(["error" => "Error creating category: " . $e->getMessage()]);
+            http_response_code(500);
+            echo json_encode(["error" => "An internal database error occurred."]);
         }
     }
 
@@ -86,7 +86,7 @@ class CategoryController
             echo json_encode(["error" => $e->getMessage()]);
         } catch (PDOException $e) {
             http_response_code(500);
-            echo json_encode(["error" => "Error deleting category: " . $e->getMessage()]);
+            echo json_encode(["error" => "An internal database error occurred."]);
         }
     }
 }

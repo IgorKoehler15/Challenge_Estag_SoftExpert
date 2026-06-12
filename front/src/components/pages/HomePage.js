@@ -100,7 +100,7 @@ export default function HomePage() {
   }, [productsDb, cart]);
 
   // Ao selecionar um produto, preenche automaticamente imposto e preço
-  const handleProductChange = (e) => {
+  const handleProductChange = useCallback((e) => {
     const code = parseInt(e.target.value);
     setSelectedProduct(e.target.value);
     const product = productsDb.find((p) => parseInt(p.code) === code);
@@ -114,10 +114,10 @@ export default function HomePage() {
       setTax('');
       setPrice('');
     }
-  };
+  }, [productsDb, categoriesDb]);
 
   // Valida e adiciona o produto selecionado ao carrinho
-  const handleAdd = () => {
+  const handleAdd = useCallback(() => {
     const selectedCode = parseInt(selectedProduct);
     const rawAmount = amount.trim();
 
@@ -165,7 +165,7 @@ export default function HomePage() {
     setAmount('');
     setTax('');
     setPrice('');
-  };
+  }, [selectedProduct, amount, productsDb, categoriesDb, cart]);
 
   // Cancela a compra e limpa o carrinho
   const handleCancel = () => {
@@ -183,8 +183,8 @@ export default function HomePage() {
         await api.checkout(cart);
         localStorage.removeItem(CART_KEY); 
         navigate('/history');
-      } catch (error) {
-        alert(error.message || 'Connection error while trying to complete the purchase.');
+      } catch (err) {
+        alert(err.message || 'Connection error while trying to complete the purchase.');
       }
     }
   };
@@ -263,7 +263,7 @@ export default function HomePage() {
   ) : (
     <>
       <DataTable
-        className="tabelaProdutos"
+        className="tableCart"
         columns={['Product', 'Price', 'Amount', 'Tax', 'Total', 'Actions']}
         rows={rows}
         fillerCols={6}

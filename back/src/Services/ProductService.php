@@ -25,9 +25,9 @@ class ProductService
     public function create(array $data): void
     {
         $name = Validator::requiredString($data, 'name', 'Product name');
-        $amount = Validator::requiredPositiveInt($data, 'amount', 'Amount');
-        $price = Validator::requiredPositiveFloat($data, 'price', 'Price');
-        $categoryCode = Validator::requiredPositiveInt($data, 'category_code', 'Category code', 999999);
+        $amount = Validator::requiredPositiveInt($data, 'amount', 'Amount', Validator::MAX_AMOUNT);
+        $price = Validator::requiredPositiveFloat($data, 'price', 'Price', Validator::MAX_PRICE);
+        $categoryCode = Validator::requiredPositiveInt($data, 'category_code', 'Category code', Validator::MAX_CODE);
 
         // Verifica se a categoria existe e está ativa
         if (!$this->categoryRepo->existsActiveByCode($categoryCode)) {
